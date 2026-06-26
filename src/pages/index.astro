@@ -1,0 +1,153 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import { marked } from 'marked';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/astro/Footer.astro';
+import HomeHub from '../components/react/HomeHub.tsx';
+import ProjectGrid from '../components/react/ProjectGrid.tsx';
+import SlideDots from '../components/react/SlideDots.tsx';
+import type { Portal } from '../components/react/HomeHub.tsx';
+import type { ProjectData } from '../components/react/ProjectGrid.tsx';
+import type { Slide } from '../components/react/SlideDots.tsx';
+import { site } from '../config/site';
+
+// About + future goals prose (rendered to HTML at build time).
+const about = await getEntry('about', 'about-me');
+const goals = await getEntry('goals', 'future-goals');
+const aboutHtml = marked.parse(about!.body) as string;
+const goalsHtml = marked.parse(goals!.body) as string;
+
+// Featured projects only, surfaced on the Home page.
+const featured: ProjectData[] = (await getCollection('projects'))
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((p) => ({ slug: p.slug, ...p.data, html: marked.parse(p.body) as string }));
+
+// The captivating, animated navigation into each section.
+const portals: Portal[] = [
+  {
+    href: '/projects',
+    title: 'Projects',
+    description: 'A gallery of things I have designed, built, and broken.',
+    accent: 'accent',
+    icon: '🛠️',
+  },
+  {
+    href: '/roadmap',
+    title: 'Learning Roadmap',
+    description: 'An interactive timeline of how I got here — and where I am headed.',
+    accent: 'accent-2',
+    icon: '🧭',
+  },
+];
+
+// Slides for the dot navigator (order matches the sections below).
+const slides: Slide[] = [
+  { id: 'hero', label: 'Intro' },
+  { id: 'about', label: 'About' },
+  { id: 'goals', label: 'Goals' },
+  { id: 'featured', label: 'Projects' },
+  { id: 'explore', label: 'Explore' },
+];
+---
+
+<BaseLayout showTabBar={false} showFooter={false}>
+  <SlideDots client:load slides={slides} />
+
+  <div
+    id="home-scroll"
+    class="h-screen w-full snap-y snap-mandatory overflow-y-scroll overflow-x-hidden scroll-smooth"
+  >
+    <!-- ═══════════ Slide 1 — Hero ═══════════ -->
+    <section
+      id="hero"
+      class="relative flex min-h-screen snap-start flex-col items-center justify-center overflow-hidden px-4 text-center"
+    >
+      <div class="pointer-events-none absolute -left-32 -top-24 h-96 w-96 rounded-full bg-accent/25 blur-3xl"></div>
+      <div class="pointer-events-none absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-accent-2/25 blur-3xl"></div>
+
+      <p class="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-accent">{site.role}</p>
+      <h1 class="text-5xl font-extrabold tracking-tight sm:text-7xl">
+        Hi, I'm <span class="text-accent">{site.name}</span>.
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-muted sm:text-xl">{site.tagline}</p>
+
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <a href={site.resumePath} download class="btn-accent">
+          Download Résumé <span aria-hidden>⤓</span>
+        </a>
+        <a href="#featured" class="btn-ghost">See my work</a>
+      </div>
+
+      <a
+        href="#about"
+        aria-label="Scroll to About"
+        class="absolute bottom-10 flex animate-bounce flex-col items-center text-muted transition hover:text-accent"
+      >
+        <span class="text-xs uppercase tracking-widest">Scroll</span>
+        <span aria-hidden class="text-2xl leading-none">⌄</span>
+      </a>
+    </section>
+
+    <!-- ═══════════ Slide 2 — About me (with portrait) ═══════════ -->
+    <section id="about" class="flex min-h-screen snap-start items-center px-4 py-20">
+      <div class="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
+        <div class="relative mx-auto w-full max-w-sm">
+          <div class="pointer-events-none absolute -inset-3 -z-10 rounded-3xl bg-accent/20 blur-2xl"></div>
+          <img
+            src={site.portrait}
+            alt={`Portrait of ${site.name}`}
+            class="aspect-square w-full rounded-3xl border border-border object-cover shadow-glow"
+          />
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold sm:text-4xl">
+            About <span class="text-accent">Me</span>
+          </h2>
+          <div class="rich-text mt-4 text-lg" set:html={aboutHtml} />
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ Slide 3 — Future Goals ═══════════ -->
+    <section id="goals" class="flex min-h-screen snap-start items-center px-4 py-20">
+      <div class="mx-auto max-w-3xl text-center">
+        <h2 class="text-3xl font-bold sm:text-4xl">
+          Future <span class="text-accent">Goals</span>
+        </h2>
+        <div class="rich-text mt-5 text-lg sm:text-xl" set:html={goalsHtml} />
+      </div>
+    </section>
+
+    <!-- ═══════════ Slide 4 — Featured Projects ═══════════ -->
+    <section
+      id="featured"
+      class="flex min-h-screen snap-start flex-col items-center justify-center px-4 py-20"
+    >
+      <div class="mx-auto w-full max-w-6xl">
+        <div class="mb-8 flex items-end justify-between gap-4">
+          <h2 class="text-3xl font-bold sm:text-4xl">
+            Featured <span class="text-accent">Projects</span>
+          </h2>
+          <a href="/projects" class="text-sm font-medium text-accent hover:brightness-110">
+            View all →
+          </a>
+        </div>
+        <ProjectGrid client:load projects={featured} />
+      </div>
+    </section>
+
+    <!-- ═══════════ Slide 5 — Explore (navigation) + footer ═══════════ -->
+    <section id="explore" class="flex min-h-screen snap-start flex-col px-4">
+      <div class="flex flex-1 flex-col items-center justify-center py-20">
+        <div class="mx-auto w-full max-w-6xl">
+          <h2 class="mb-8 text-center text-3xl font-bold sm:text-4xl">
+            Where to <span class="text-accent">next?</span>
+          </h2>
+          <HomeHub client:load portals={portals} />
+        </div>
+      </div>
+      <Footer />
+    </section>
+  </div>
+</BaseLayout>

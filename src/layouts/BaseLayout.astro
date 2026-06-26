@@ -1,0 +1,82 @@
+---
+import '../styles/global.css';
+import { ViewTransitions } from 'astro:transitions';
+import { site } from '../config/site';
+import TabBar from '../components/react/TabBar.tsx';
+import ThemeToggle from '../components/react/ThemeToggle.tsx';
+import Footer from '../components/astro/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Home hub hides the tab bar; inner pages show it. */
+  showTabBar?: boolean;
+  /** Home renders its own footer inside the last slide, so it disables this one. */
+  showFooter?: boolean;
+}
+
+const {
+  title = site.name,
+  description = site.tagline,
+  showTabBar = true,
+  showFooter = true,
+} = Astro.props;
+
+const pathname = Astro.url.pathname;
+const pageTitle = title === site.name ? site.name : `${title} · ${site.name}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="description" content={description} />
+    <title>{pageTitle}</title>
+    <ViewTransitions />
+    <!-- Apply saved theme before paint to avoid a flash of the wrong theme. -->
+    <script is:inline>
+      (function () {
+        function apply() {
+          var t = localStorage.getItem('theme');
+          if (!t) {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.classList.toggle('dark', t === 'dark');
+        }
+        apply();
+        // Re-apply after View Transitions swaps the document.
+        document.addEventListener('astro:after-swap', apply);
+      })();
+    </script>
+  </head>
+  <body>
+    {
+      showTabBar ? (
+        <header
+          transition:persist
+          class="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur"
+        >
+          <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+            <a href="/" class="font-bold tracking-tight transition hover:text-accent">
+              {site.name}
+            </a>
+            <TabBar client:load pathname={pathname} />
+            <ThemeToggle client:load />
+          </div>
+        </header>
+      ) : (
+        <div class="fixed right-4 top-4 z-40">
+          <ThemeToggle client:load />
+        </div>
+      )
+    }
+
+    <main>
+      <slot />
+    </main>
+
+    {showFooter && <Footer />}
+  </body>
+</html>

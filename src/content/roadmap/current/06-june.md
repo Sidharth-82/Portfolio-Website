@@ -1,0 +1,10 @@
+---
+label: June
+sublabel: "2026"
+order: 6
+---
+
+**Plan for June.** Mid-year checkpoint: review progress and adjust the plan. Lorem ipsum dolor sit amet, consectetur
+adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+ut aliquip ex ea commodo consequat.
