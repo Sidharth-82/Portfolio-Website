@@ -1,10 +1,16 @@
 ---
 label: February
-sublabel: "2026"
-order: 2
+sublabel: "2027"
+order: 8
 ---
 
-**Plan for February.** Go deep on fundamentals and tighten up daily habits. Lorem ipsum dolor sit amet, consectetur
-adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat.
+**Tier 2 · Integration — Vision-Language & VLA models.** Bring language and
+reasoning into the perception stack — the heart of my research interest.
+
+- **Focus:** image–text alignment, VQA, vision-language-action models for driving.
+- **Key papers (suggested):** CLIP (Radford et al.); LLaVA (Liu et al.);
+  **OpenDriveVLA** (the basis for my WISE Lab research).
+- **Deliverable:** extend the [Qwen 3 VQA](/projects) pipeline to answer
+  perception-grounded driving questions over fused camera/LiDAR scenes.
+
+<!-- TODO: confirm VLM/VLA targets + eval for this month. -->

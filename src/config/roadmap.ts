@@ -39,7 +39,7 @@ export const eras: Era[] = [
   {
     id: 'current',
     title: 'Future Plan',
-    subtitle: 'Present - June 2027',
+    subtitle: 'July 2026 – June 2027',
     kind: 'months',
     collectionDir: 'current',
     order: 2,

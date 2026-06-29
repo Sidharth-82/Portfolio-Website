@@ -153,8 +153,19 @@ notes are in `astro.config.mjs`).
 
 ## 7. Placeholder content status (replace before going live)
 
-- Name/role/links are placeholders in `src/config/site.ts`.
-- All project copy, About me, Future Goals, and every roadmap node are **lorem
-  ipsum / scrap data**.
-- Project tile images are generated **SVG placeholders**; `resume.pdf` is a
-  generated **placeholder PDF**.
+- Identity in `src/config/site.ts` is **real** (name, email, phone, socials);
+  `role`/`tagline` are author-set copy — tweak to taste.
+- **Projects** (`src/content/projects/*.md`) are **real** — 16 tiles drawn from
+  the résumés/portfolio (UWB capstone, Qwen 3 VQA, Mars Rover, etc.). Each file
+  has an `IMAGE NEEDED` HTML comment describing the real photo/diagram to drop
+  in, and a few have `GITHUB:` notes where the repo URL is unconfirmed.
+- **Undergraduate roadmap** (`roadmap/undergraduate/year-1..5.md`) is **real** —
+  populated from the official transcript (courses, co-ops, standing) per year.
+- **Future Plan roadmap** (`roadmap/current/*.md`) is a **DRAFT** three-tier
+  CV/AI learning curriculum (Foundation → Integration → Capstone), spanning
+  **July 2026 → June 2027** (note: month nodes order Jul-first via the `order`
+  field; filenames keep their calendar-month names). Suggested papers/datasets
+  are anchors with `TODO` comments — confirm/replace with the real reading list.
+- About me & Future Goals prose are **author-written** (not lorem).
+- Project tile images are still generated **labeled SVG placeholders**
+  (`public/images/projects/*.svg`); `resume.pdf` is still a **placeholder PDF**.

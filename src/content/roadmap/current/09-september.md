@@ -1,10 +1,16 @@
 ---
 label: September
 sublabel: "2026"
-order: 9
+order: 3
 ---
 
-**Plan for September.** Sharpen interview and communication skills. Lorem ipsum dolor sit amet, consectetur
-adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat.
+**Tier 1 · Foundation — Semantic & instance segmentation.** Pixel-level scene
+understanding: which pixels are road, lane, vehicle, or pedestrian.
+
+- **Focus:** encoder–decoder architectures, dilated convolutions, instance masks.
+- **Key papers (suggested):** U-Net (Ronneberger et al.); Mask R-CNN (He et al.);
+  DeepLab (Chen et al.).
+- **Deliverable:** train a segmentation model for road/lane/vehicle classes on
+  **Cityscapes** and visualize the masks.
+
+<!-- TODO: confirm dataset + segmentation model for this month. -->

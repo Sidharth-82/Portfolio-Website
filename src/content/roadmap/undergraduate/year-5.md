@@ -1,11 +1,32 @@
 ---
 label: Year 5
-sublabel: 2024 – 2025
+sublabel: 2025 – 2026
 order: 5
 ---
 
-Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore,
-cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
-placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.
-Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe
-eveniet ut et voluptates repudiandae sint et molestiae non recusandae.
+**Mechatronics Engineering, Level 4A–4B — Artificial Intelligence Option.** The
+final year: a full pivot into AI, autonomous systems, and research, capped by my
+capstone and a research role. Graduating **June 2026**, with **Term Distinction**
+in Fall 2025 and Excellent Standing throughout.
+
+**Study terms — courses**
+
+- *Fall 2025 (4A):* Fundamentals of Computational Intelligence (ECE 457B),
+  Mechatronics Engineering Design Project (MTE 481), Control Applications
+  (MTE 484), Autonomous Mobile Robots (MTE 544), The Computing Society (STV 210).
+- *Winter 2026 (4B):* Co-operative & Adaptive Algorithms (ECE 457A), Multivariable
+  Control Systems (ECE 488), Autonomous Vehicles (ECE 495), Mechatronics
+  Engineering Project (MTE 482), Classical Mythology (CLAS 104).
+
+**Research**
+
+- *Jan 2026 – Present — Research Assistant, UW WISE Lab:* developed Python logic
+  to structure visual + text data into VLM instruction-tuning prompts (based on
+  the **OpenDriveVLA** paper) for autonomous-driving visual QA.
+
+**Capstone & projects**
+
+- **FYDP:** [UWB Tag & Anchor Tracking System](/projects) — designed across
+  custom PCBs, TDoA localization, a backend, and a 3-D web frontend.
+- [Qwen 3 VQA Model Tuning](/projects) and the
+  [Ball & Beam Motion Controller](/projects) (MTE 484).

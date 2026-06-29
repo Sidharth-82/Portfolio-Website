@@ -1,10 +1,16 @@
 ---
 label: May
-sublabel: "2026"
-order: 5
+sublabel: "2027"
+order: 11
 ---
 
-**Plan for May.** Contribute to open source and learn from code review feedback. Lorem ipsum dolor sit amet, consectetur
-adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat.
+**Tier 3 · Capstone — Fusion, tracking & reasoning.** Add the temporal and
+multimodal layers, plus a language/reasoning head on top of perception.
+
+- **Focus:** sensor fusion + multi-object tracking + a VLM reasoning/QA layer.
+- **Work:** integrate camera–LiDAR fusion and tracking (Tier 2) and attach the
+  VLA/VQA reasoning layer for scene understanding and explanation.
+- **Deliverable:** a full, temporally-consistent perception stack that both
+  detects/tracks objects and answers grounded questions about the scene.
+
+<!-- TODO: confirm the reasoning-layer scope (full VLA vs. VQA-only). -->

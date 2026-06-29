@@ -1,10 +1,17 @@
 ---
 label: March
-sublabel: "2026"
-order: 3
+sublabel: "2027"
+order: 9
 ---
 
-**Plan for March.** Ship a small project end-to-end to put theory into practice. Lorem ipsum dolor sit amet, consectetur
-adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat.
+**Tier 3 · Capstone — Scoping & data pipeline.** Kick off the unified
+**autonomous-driving perception stack** that ties every Tier 1–2 concept together.
+
+- **Focus:** define scope and success metrics; stand up a reproducible data and
+  evaluation pipeline.
+- **Work:** set up a **nuScenes / Waymo Open** pipeline, choose evaluation metrics
+  (mAP, NDS, MOTA), and establish baselines from earlier-month models.
+- **Deliverable:** a documented repo skeleton with data loaders, configs, and a
+  baseline benchmark.
+
+<!-- TODO: confirm capstone scope, dataset, and target metrics. -->

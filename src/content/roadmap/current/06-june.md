@@ -1,10 +1,17 @@
 ---
 label: June
-sublabel: "2026"
-order: 6
+sublabel: "2027"
+order: 12
 ---
 
-**Plan for June.** Mid-year checkpoint: review progress and adjust the plan. Lorem ipsum dolor sit amet, consectetur
-adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat.
+**Tier 3 · Capstone — Evaluation, benchmarking & publication.** Close out the
+roadmap by validating the full stack and packaging the work.
+
+- **Focus:** rigorous evaluation, ablations, and clear write-up.
+- **Work:** benchmark the unified perception stack against published baselines,
+  run ablations across modules, and document findings.
+- **Deliverable:** a published capstone — repo, technical write-up, and a new
+  [project tile](/projects) — completing the one-year computer-vision /
+  perception roadmap.
+
+<!-- TODO: decide publication venue/format (blog, paper, portfolio piece). -->

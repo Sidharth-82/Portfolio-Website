@@ -1,10 +1,17 @@
 ---
 label: April
-sublabel: "2026"
-order: 4
+sublabel: "2027"
+order: 10
 ---
 
-**Plan for April.** Focus on systems design and reading high-quality codebases. Lorem ipsum dolor sit amet, consectetur
-adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-ut aliquip ex ea commodo consequat.
+**Tier 3 · Capstone — Core perception modules.** Build and integrate the
+single-frame perception components into one pipeline.
+
+- **Focus:** combine detection, segmentation, and depth into a shared BEV
+  representation.
+- **Work:** wire the Tier 1 modules (detector, segmenter, depth) into a unified
+  inference graph with consistent coordinate frames.
+- **Deliverable:** an end-to-end single-frame perception module producing BEV
+  detections + a semantic map, benchmarked against the March baseline.
+
+<!-- TODO: confirm which modules make the capstone integration cut. -->
