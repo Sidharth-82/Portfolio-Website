@@ -5,7 +5,7 @@ import tailwind from '@astrojs/tailwind';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://Sidharth-82.github.io',
-  base: '/Portfolio-Website',
+  base: '/portfolio',
   integrations: [
     react(),
     // We import our own global.css (with the @tailwind directives + theme
