@@ -4,8 +4,8 @@ summary: A GPS-based autonomous navigation stack for the UW Robotics Mars rover 
 image: /images/projects/mars-rover-gps.svg
 github: https://github.com/Sidharth-82/UWRobotics_MarsRover
 tags: [C++, Python, ROS2, Nav2, GPS, EKF, Docker]
-featured: true
-order: 3
+featured: false
+order: 7
 ---
 
 <!--

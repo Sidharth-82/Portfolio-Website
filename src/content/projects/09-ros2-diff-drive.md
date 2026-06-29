@@ -5,7 +5,7 @@ image: /images/projects/ros2-diff-drive.svg
 github: https://github.com/Sidharth-82
 tags: [ROS2, Nav2, SLAM, Gazebo, URDF, RViz]
 featured: false
-order: 6
+order: 9
 ---
 
 <!--

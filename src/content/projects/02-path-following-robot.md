@@ -5,7 +5,7 @@ image: /images/projects/path-following-robot.svg
 github: https://github.com/VictorKaraboychev/mobile-robot-vision-rp5
 tags: [Python, Raspberry Pi, OpenCV, YOLOv8, Pure Pursuit, PID]
 featured: true
-order: 4
+order: 2
 ---
 
 <!--

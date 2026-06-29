@@ -5,7 +5,7 @@ image: /images/projects/ball-beam-controller.svg
 github: https://github.com/Sidharth-82
 tags: [MATLAB, Simulink, Control Systems, System Identification]
 featured: false
-order: 5
+order: 8
 ---
 
 <!--

@@ -4,8 +4,8 @@ summary: A C++ control system with odometry tracking and PID loops for precise a
 image: /images/projects/vex-v5-odometry.svg
 github: https://github.com/Sidharth-82
 tags: [C++, Odometry, PID, Kinematics]
-featured: false
-order: 10
+featured: true
+order: 4
 ---
 
 <!--

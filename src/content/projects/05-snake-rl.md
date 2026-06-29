@@ -4,8 +4,8 @@ summary: A Deep Q-Network trained in PyTorch to learn optimal control policies f
 image: /images/projects/snake-rl.svg
 github: https://github.com/Sidharth-82/PyTorch-Projects/blob/main/SnakeGame/DESCRIPTION.md
 tags: [Python, PyTorch, Deep Q-Networks, Reinforcement Learning]
-featured: false
-order: 8
+featured: true
+order: 5
 ---
 
 <!--

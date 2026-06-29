@@ -5,7 +5,7 @@ image: /images/projects/qwen3-vqa.svg
 github: https://github.com/Sidharth-82/PyTorch-Projects/blob/main/Qwen%203/DESCRIPTION.md
 tags: [Python, PyTorch, Qwen 3, VLM, LoRA, Hugging Face]
 featured: true
-order: 2
+order: 3
 ---
 
 <!--

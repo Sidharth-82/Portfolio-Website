@@ -4,8 +4,8 @@ summary: A multi-class image classifier in PyTorch, using transfer learning for 
 image: /images/projects/image-classification.svg
 github: https://github.com/Sidharth-82/PyTorch-Projects/blob/main/ImageClassification/DESCRIPTION.md
 tags: [Python, PyTorch, CNN, Transfer Learning]
-featured: false
-order: 9
+featured: true
+order: 6
 ---
 
 <!--
