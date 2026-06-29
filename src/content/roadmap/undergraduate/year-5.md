@@ -26,7 +26,7 @@ in Fall 2025 and Excellent Standing throughout.
 
 **Capstone & projects**
 
-- **FYDP:** [UWB Tag & Anchor Tracking System](/projects#uwb-tracking) — designed
+- **FYDP:** [UWB Tag & Anchor Tracking System](/projects/#uwb-tracking) — designed
   across custom PCBs, TDoA localization, a backend, and a 3-D web frontend.
-- [Qwen 3 VQA Model Tuning](/projects#qwen3-vqa) and the
-  [Ball & Beam Motion Controller](/projects#ball-beam-controller) (MTE 484).
+- [Qwen 3 VQA Model Tuning](/projects/#qwen3-vqa) and the
+  [Ball & Beam Motion Controller](/projects/#ball-beam-controller) (MTE 484).

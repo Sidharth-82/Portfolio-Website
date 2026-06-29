@@ -23,6 +23,9 @@ const erasData: EraData[] = eras
       .sort((a, b) => a.data.order - b.data.order)
       .map((n) => ({
         id: n.id,
+        // Stable deep-link slug from the filename: `undergraduate/year-1` ->
+        // `year-1`, `current/01-january` -> `january`. Used by `/roadmap/#<slug>`.
+        slug: n.id.split('/')[1].replace(/^\d+-/, '').replace(/\.md$/, ''),
         label: n.data.label,
         sublabel: n.data.sublabel,
         html: renderMarkdown(n.body),

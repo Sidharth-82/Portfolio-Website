@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Modal from './Modal';
 
 export interface TimelineEntry {
   id: string;
+  /** stable deep-link slug, e.g. `year-1` or `january` (`/roadmap/#<slug>`) */
+  slug: string;
   label: string;
   sublabel?: string;
   /** detailed description, pre-rendered to HTML at build time */
@@ -39,6 +41,68 @@ export default function Timeline({ eras }: Props) {
   // A connecting line reads as a "timeline" only for a single centered row.
   const showLine = (activeEra?.entries.length ?? 0) <= 6;
 
+  // Deep-linking: `/roadmap/#<era>` zooms into an era; `/roadmap/#<node>` zooms
+  // into the node's era and opens its popup. Re-checked on initial load, after
+  // Astro view-transition navigations, and on manual hash changes.
+  const syncFromHash = useCallback(() => {
+    const slug = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+    if (!slug) return;
+    // Era-level deep link.
+    const era = eras.find((e) => e.id === slug);
+    if (era) {
+      setActiveEraId(era.id);
+      setEntry(null);
+      return;
+    }
+    // Node-level deep link.
+    for (const e of eras) {
+      const match = e.entries.find((en) => en.slug === slug);
+      if (match) {
+        setActiveEraId(e.id);
+        setEntry(match);
+        return;
+      }
+    }
+  }, [eras]);
+
+  useEffect(() => {
+    syncFromHash();
+    document.addEventListener('astro:page-load', syncFromHash);
+    window.addEventListener('hashchange', syncFromHash);
+    return () => {
+      document.removeEventListener('astro:page-load', syncFromHash);
+      window.removeEventListener('hashchange', syncFromHash);
+    };
+  }, [syncFromHash]);
+
+  // Keep the URL hash in sync so any view is shareable/deep-linkable. Passing
+  // null drops the hash (preserving the base path + search).
+  const setHash = (h: string | null) => {
+    if (h) history.replaceState(null, '', `#${h}`);
+    else if (window.location.hash)
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+  };
+
+  const openEra = (id: string) => {
+    setActiveEraId(id);
+    setEntry(null);
+    setHash(id);
+  };
+  const closeEra = () => {
+    setActiveEraId(null);
+    setEntry(null);
+    setHash(null);
+  };
+  const openEntry = (en: TimelineEntry) => {
+    setEntry(en);
+    setHash(en.slug);
+  };
+  // Closing a node returns to its era view, so revert the hash to the era id.
+  const closeEntry = () => {
+    setEntry(null);
+    setHash(activeEraId);
+  };
+
   return (
     <div className="relative">
       <AnimatePresence mode="wait">
@@ -58,7 +122,7 @@ export default function Timeline({ eras }: Props) {
               {eras.map((era, i) => (
                 <motion.button
                   key={era.id}
-                  onClick={() => setActiveEraId(era.id)}
+                  onClick={() => openEra(era.id)}
                   className="group flex h-44 w-44 flex-col items-center justify-center rounded-full border border-border bg-surface px-5 text-center transition hover:border-accent hover:shadow-glow"
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -90,7 +154,7 @@ export default function Timeline({ eras }: Props) {
                 <h3 className="text-2xl font-bold">{activeEra.title}</h3>
                 <p className="text-sm text-muted">{activeEra.subtitle}</p>
               </div>
-              <button onClick={() => setActiveEraId(null)} className="btn-ghost">
+              <button onClick={closeEra} className="btn-ghost">
                 ← All eras
               </button>
             </div>
@@ -103,7 +167,7 @@ export default function Timeline({ eras }: Props) {
                 {activeEra.entries.map((en, i) => (
                   <motion.button
                     key={en.id}
-                    onClick={() => setEntry(en)}
+                    onClick={() => openEntry(en)}
                     className="group flex h-28 w-28 flex-col items-center justify-center rounded-full border-2 border-border bg-surface px-3 text-center transition hover:border-accent hover:bg-accent/10 hover:shadow-glow"
                     initial={{ opacity: 0, scale: 0.85 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -126,7 +190,7 @@ export default function Timeline({ eras }: Props) {
         )}
       </AnimatePresence>
 
-      <Modal open={!!entry} onClose={() => setEntry(null)} label={entry?.label}>
+      <Modal open={!!entry} onClose={closeEntry} label={entry?.label}>
         {entry && (
           <article>
             <h2 className="text-2xl font-bold">{entry.label}</h2>

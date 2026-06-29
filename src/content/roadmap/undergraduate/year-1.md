@@ -26,6 +26,6 @@ throughout.
 **Projects & teams**
 
 - Joined the **Midnight Sun Solar Car Team** and began the
-  [pedal control board](/projects#pedal-control-board) redesign.
-- Built the [Environment Reactive Robot](/projects#reactive-robot) (MTE 121) and
-  the [Digital Linear Caliper](/projects#digital-caliper) (MTE 202).
+  [pedal control board](/projects/#pedal-control-board) redesign.
+- Built the [Environment Reactive Robot](/projects/#reactive-robot) (MTE 121) and
+  the [Digital Linear Caliper](/projects/#digital-caliper) (MTE 202).

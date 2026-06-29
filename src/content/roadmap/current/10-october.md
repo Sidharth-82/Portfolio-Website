@@ -9,7 +9,7 @@ order: 4
 
 - **Focus:** camera models, epipolar geometry, monocular/stereo depth,
   structure-from-motion. Builds on the homography work in my
-  [Path Following Robot](/projects#path-following-robot).
+  [Path Following Robot](/projects/#path-following-robot).
 - **Key papers (suggested):** MiDaS — *Towards Robust Monocular Depth* (Ranftl et
   al.); classic stereo / SfM references.
 - **Deliverable:** run monocular depth estimation on driving frames and project
