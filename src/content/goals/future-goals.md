@@ -2,10 +2,7 @@
 title: Future Goals
 ---
 
-Over the next five years I want to grow from someone who *builds* software into
-someone who *shapes* the products and teams around it. In the near term, my goal
-is to deepen my engineering foundations — systems design, performance, and craft
-— while shipping projects I'm genuinely proud of. Looking further out, I aim to
-lead meaningful technical work, mentor others coming up behind me, and contribute
-to tools that make a real difference for the people who use them. Above all, I
-want to keep learning relentlessly and stay curious about the next hard problem.
+Over the next five years I want to become someone who can research and develop computer vision systems. 
+In the pursuit of knowledge, I have a 1 year learning roadmap setup filled with research papers and projects dedicated to teaching me different concepts. 
+Split into three tiers, I plan to build a strong foundation, then integrate each concept into a final capstone projects based around the Autonomous driving perception stack. 
+This project plan was designed to provide me foundational knowledge and experience in researching and developing a unified computer vision and aritifical intelligence perception system. The full roadmap is outline in the [Roadmap](/roadmap) future plans timeline sub-section.

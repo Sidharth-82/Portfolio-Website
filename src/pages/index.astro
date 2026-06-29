@@ -41,6 +41,9 @@ const portals: Portal[] = [
   },
 ];
 
+// tel: links can't contain spaces/parentheses — strip everything but + and digits.
+const telHref = `tel:${site.phone.replace(/[^+\d]/g, '')}`;
+
 // Slides for the dot navigator (order matches the sections below).
 const slides: Slide[] = [
   { id: 'hero', label: 'Intro' },
@@ -72,7 +75,17 @@ const slides: Slide[] = [
       </h1>
       <p class="mx-auto mt-6 max-w-2xl text-lg text-muted sm:text-xl">{site.tagline}</p>
 
+      <!-- Contact: email + phone -->
       <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <a href={`mailto:${site.email}`} class="btn-ghost">
+          <span aria-hidden>✉️</span> {site.email}
+        </a>
+        <a href={telHref} class="btn-ghost">
+          <span aria-hidden>📞</span> {site.phone}
+        </a>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
         <a href={site.resumePath} download class="btn-accent">
           Download Résumé <span aria-hidden>⤓</span>
         </a>

@@ -31,15 +31,15 @@ export const eras: Era[] = [
   {
     id: 'undergraduate',
     title: 'Undergraduate',
-    subtitle: 'B.S. · 2020 – 2024',
+    subtitle: 'Sept 2021 – June 2026',
     kind: 'years',
     collectionDir: 'undergraduate',
     order: 1,
   },
   {
     id: 'current',
-    title: 'Current Year',
-    subtitle: '2026',
+    title: 'Future Plan',
+    subtitle: 'Present - June 2027',
     kind: 'months',
     collectionDir: 'current',
     order: 2,

@@ -9,17 +9,19 @@ export interface NavTab {
 }
 
 export const site = {
-  name: 'Your Name',
-  role: 'Aspiring Software Engineer',
-  tagline: 'I build thoughtful software and I am always learning something new.',
-  email: 'you@example.com',
+  name: 'Sidharth Sreeram',
+  role: 'Aspiring Perception System Engineer',
+  tagline: 'I build software to understand the world around.',
+  email: 'sidharthsreeram@gmail.com',
+  /** Replace with your real number. Used for the hero "Call" button (tel: link). */
+  phone: '+1 (416) 564-8590',
   /** Static file served from /public. Drop your real resume at public/resume.pdf */
   resumePath: '/resume.pdf',
   /** Portrait shown in the Home "About me" slide. Replace this file. */
-  portrait: '/images/about/portrait.svg',
+  portrait: '/images/about/photo.jpeg',
   socials: {
-    github: 'https://github.com/yourname',
-    linkedin: 'https://www.linkedin.com/in/yourname',
+    github: 'https://github.com/Sidharth-82',
+    linkedin: 'https://www.linkedin.com/in/sidharthsreeram/',
   },
 };
 
