@@ -2,7 +2,6 @@
 title: Digital Linear Caliper (MTE 202)
 summary: An Arduino linear caliper using a rotary encoder, 3D-printed gears, and linear regression for calibration.
 image: /images/projects/digital-caliper.svg
-github: https://github.com/Sidharth-82
 tags: [C++, Arduino, Rotary Encoder, Linear Regression]
 featured: false
 order: 14

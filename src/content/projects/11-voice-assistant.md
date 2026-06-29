@@ -2,7 +2,6 @@
 title: AI-Based Voice Assistant
 summary: A Python voice assistant that interprets spoken commands and replies using the GPT API and TTS.
 image: /images/projects/voice-assistant.svg
-github: https://github.com/Sidharth-82
 tags: [Python, GPT API, Speech-to-Text, Text-to-Speech]
 featured: false
 order: 16

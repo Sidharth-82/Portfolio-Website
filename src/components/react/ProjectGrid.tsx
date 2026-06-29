@@ -112,7 +112,7 @@ export default function ProjectGrid({ projects }: Props) {
               ))}
             </div>
             <div className="rich-text mt-4" dangerouslySetInnerHTML={{ __html: active.html }} />
-            {active.github && (
+            {active.github?.trim() && (
               <a
                 href={active.github}
                 target="_blank"

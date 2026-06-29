@@ -2,7 +2,6 @@
 title: Solar Car Pedal Control Board
 summary: A pedal-interface PCB for the Midnight Sun Solar Car Team, conditioning and digitizing pedal sensor signals.
 image: /images/projects/pedal-control-board.svg
-github: https://github.com/Sidharth-82
 tags: [Altium, PCB, Analog, Op-Amp, ADC, I2C]
 featured: false
 order: 12

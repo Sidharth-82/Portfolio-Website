@@ -2,7 +2,7 @@
 title: ROS2 TurtleSim — Chaser & Spawner
 summary: A ROS2 Humble system where a chaser node pursues turtles spawned at random poses using a P-controller.
 image: /images/projects/ros2-turtlesim.svg
-github: https://github.com/Sidharth-82
+github: https://github.com/Sidharth-82/ROS2_Humble_Turtlesim_Chaser_ws
 tags: [ROS2, Python, Pub/Sub, P-Control]
 featured: false
 order: 16

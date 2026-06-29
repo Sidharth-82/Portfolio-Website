@@ -2,7 +2,6 @@
 title: Environment Reactive Robot (MTE 121)
 summary: A Lego robot programmed in C that reacts to its environment with six distinct emotional states.
 image: /images/projects/reactive-robot.svg
-github: https://github.com/Sidharth-82
 tags: [C, Sensors, State Machine, Robotics]
 featured: false
 order: 15

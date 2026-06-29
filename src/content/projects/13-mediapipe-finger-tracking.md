@@ -2,7 +2,6 @@
 title: MediaPipe Finger Tracking
 summary: An exploration of MediaPipe's hand- and finger-tracking for human-motion computer vision.
 image: /images/projects/mediapipe-finger-tracking.svg
-github: https://github.com/Sidharth-82
 tags: [Python, MediaPipe, Computer Vision]
 featured: false
 order: 13

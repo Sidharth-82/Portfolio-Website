@@ -2,10 +2,9 @@
 title: Llama 3 Transformer implementaion
 summary: A simulated 2-wheel differential-drive robot built with ROS2, Nav2, and the SLAM Toolbox.
 image: /images/projects/ros2-diff-drive.svg
-github: https://github.com/Sidharth-82
 tags: [ROS2, Nav2, SLAM, Gazebo, URDF, RViz]
-featured: false
-order: 10
+featured: true
+order: 04
 ---
 
 <!--
