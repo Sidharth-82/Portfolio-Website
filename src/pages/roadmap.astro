@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import { marked } from 'marked';
+import { renderMarkdown } from '../lib/markdown';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Timeline from '../components/react/Timeline.tsx';
 import type { EraData } from '../components/react/Timeline.tsx';
@@ -25,7 +25,7 @@ const erasData: EraData[] = eras
         id: n.id,
         label: n.data.label,
         sublabel: n.data.sublabel,
-        html: marked.parse(n.body) as string,
+        html: renderMarkdown(n.body),
       })),
   }));
 ---

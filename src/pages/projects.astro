@@ -1,13 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
-import { marked } from 'marked';
+import { renderMarkdown } from '../lib/markdown';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectGrid from '../components/react/ProjectGrid.tsx';
 import type { ProjectData } from '../components/react/ProjectGrid.tsx';
 
 const projects: ProjectData[] = (await getCollection('projects'))
   .sort((a, b) => a.data.order - b.data.order)
-  .map((p) => ({ slug: p.slug, ...p.data, html: marked.parse(p.body) as string }));
+  .map((p) => ({ slug: p.slug, ...p.data, html: renderMarkdown(p.body) }));
 ---
 
 <BaseLayout title="Projects" description="Projects I have designed and built.">

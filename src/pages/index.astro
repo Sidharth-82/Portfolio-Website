@@ -1,6 +1,6 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-import { marked } from 'marked';
+import { renderMarkdown } from '../lib/markdown';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Footer from '../components/astro/Footer.astro';
 import HomeHub from '../components/react/HomeHub.tsx';
@@ -14,14 +14,14 @@ import { site, withBase } from '../config/site';
 // About + future goals prose (rendered to HTML at build time).
 const about = await getEntry('about', 'about-me');
 const goals = await getEntry('goals', 'future-goals');
-const aboutHtml = marked.parse(about!.body) as string;
-const goalsHtml = marked.parse(goals!.body) as string;
+const aboutHtml = renderMarkdown(about!.body);
+const goalsHtml = renderMarkdown(goals!.body);
 
 // Featured projects only, surfaced on the Home page.
 const featured: ProjectData[] = (await getCollection('projects'))
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order)
-  .map((p) => ({ slug: p.slug, ...p.data, html: marked.parse(p.body) as string }));
+  .map((p) => ({ slug: p.slug, ...p.data, html: renderMarkdown(p.body) }));
 
 // The captivating, animated navigation into each section.
 const portals: Portal[] = [

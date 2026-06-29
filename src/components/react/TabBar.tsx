@@ -10,10 +10,10 @@ interface Props {
 /**
  * Animated top tab bar shown on every page except the Home hub.
  *
- * The header is `transition:persist`ed across View-Transition navigations, so
- * this island is NOT re-rendered with a fresh `pathname` prop when you switch
- * tabs. We therefore track the live URL on the client and update on Astro's
- * navigation events — that's what keeps the active pill in sync.
+ * The active tab is computed server-side from `pathname`, so the highlight is
+ * correct on first paint and after every View-Transition swap (the header is
+ * NOT persisted, so it re-renders fresh each navigation). We also re-sync from
+ * the live URL on Astro's navigation events as a belt-and-suspenders safeguard.
  */
 export default function TabBar({ pathname }: Props) {
   const [path, setPath] = useState(pathname);
