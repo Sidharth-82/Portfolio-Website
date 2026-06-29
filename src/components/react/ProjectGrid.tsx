@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Modal from './Modal';
 import { withBase } from '../../config/site';
@@ -26,13 +26,47 @@ interface Props {
 export default function ProjectGrid({ projects }: Props) {
   const [active, setActive] = useState<ProjectData | null>(null);
 
+  // Deep-linking: a link to `/projects#<slug>` (e.g. from a roadmap popup)
+  // opens that project's popup directly. We re-check on initial load, after
+  // Astro view-transition navigations, and on manual hash changes.
+  const openFromHash = useCallback(() => {
+    const slug = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+    if (!slug) return;
+    const match = projects.find((p) => p.slug === slug);
+    if (match) setActive(match);
+  }, [projects]);
+
+  useEffect(() => {
+    openFromHash();
+    document.addEventListener('astro:page-load', openFromHash);
+    window.addEventListener('hashchange', openFromHash);
+    return () => {
+      document.removeEventListener('astro:page-load', openFromHash);
+      window.removeEventListener('hashchange', openFromHash);
+    };
+  }, [openFromHash]);
+
+  // Open from a tile click: keep the URL shareable/deep-linkable.
+  const open = (p: ProjectData) => {
+    setActive(p);
+    history.replaceState(null, '', `#${p.slug}`);
+  };
+
+  // Close: drop the hash so a refresh (or back nav) doesn't re-open the popup.
+  const close = () => {
+    setActive(null);
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  };
+
   return (
     <>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((p, i) => (
           <motion.button
             key={p.slug}
-            onClick={() => setActive(p)}
+            onClick={() => open(p)}
             className="card group overflow-hidden text-left hover:border-accent hover:shadow-glow"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -63,7 +97,7 @@ export default function ProjectGrid({ projects }: Props) {
         ))}
       </div>
 
-      <Modal open={!!active} onClose={() => setActive(null)} label={active?.title}>
+      <Modal open={!!active} onClose={close} label={active?.title}>
         {active && (
           <article>
             <div className="relative mb-5 aspect-[16/9] overflow-hidden rounded-xl">

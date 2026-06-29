@@ -27,6 +27,7 @@ Ford and backend/API work at Tamaki — which shaped my path toward software and
 
 **Projects**
 
-- Built the [Path Following Robot](/projects) (MTE 380) vision system.
+- Built the [Path Following Robot](/projects#path-following-robot) (MTE 380)
+  vision system.
 
 **Held Excellent Standing.**

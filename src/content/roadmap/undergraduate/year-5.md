@@ -20,13 +20,13 @@ in Fall 2025 and Excellent Standing throughout.
 
 **Research**
 
-- *Jan 2026 – Present — Research Assistant, UW WISE Lab:* developed Python logic
+- *Jan – April 2026 — Research Assistant, UW WISE Lab:* developed Python logic
   to structure visual + text data into VLM instruction-tuning prompts (based on
   the **OpenDriveVLA** paper) for autonomous-driving visual QA.
 
 **Capstone & projects**
 
-- **FYDP:** [UWB Tag & Anchor Tracking System](/projects) — designed across
-  custom PCBs, TDoA localization, a backend, and a 3-D web frontend.
-- [Qwen 3 VQA Model Tuning](/projects) and the
-  [Ball & Beam Motion Controller](/projects) (MTE 484).
+- **FYDP:** [UWB Tag & Anchor Tracking System](/projects#uwb-tracking) — designed
+  across custom PCBs, TDoA localization, a backend, and a 3-D web frontend.
+- [Qwen 3 VQA Model Tuning](/projects#qwen3-vqa) and the
+  [Ball & Beam Motion Controller](/projects#ball-beam-controller) (MTE 484).

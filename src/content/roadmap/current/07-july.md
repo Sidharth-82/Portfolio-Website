@@ -22,7 +22,8 @@ work.
 - **Key papers (suggested):** ResNet — *Deep Residual Learning* (He et al.);
   Batch Normalization (Ioffe & Szegedy).
 - **Deliverable:** revisit and extend the
-  [PyTorch Image Classifier](/projects) — re-implement a ResNet block from
+  [PyTorch Image Classifier](/projects#image-classification) — re-implement a
+  ResNet block from
   scratch and benchmark against a pretrained baseline.
 
 <!-- TODO: confirm papers + deliverable for this month. -->

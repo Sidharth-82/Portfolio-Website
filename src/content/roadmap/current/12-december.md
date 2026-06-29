@@ -12,6 +12,6 @@ that complements cameras in the autonomous-driving stack.
   (Lang et al.); BEVFormer (Li et al.).
 - **Deliverable:** train a LiDAR 3-D detector on **nuScenes** and render BEV
   detections — building on the LiDAR exposure from my
-  [Qwen 3 VQA](/projects) and WISE Lab work.
+  [Qwen 3 VQA](/projects#qwen3-vqa) and WISE Lab work.
 
 <!-- TODO: confirm 3-D detector + dataset for this month. -->
