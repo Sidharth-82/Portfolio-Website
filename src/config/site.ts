@@ -16,9 +16,9 @@ export const site = {
   /** Replace with your real number. Used for the hero "Call" button (tel: link). */
   phone: '+1 (416) 564-8590',
   /** Static file served from /public. Drop your real resume at public/resume.pdf */
-  resumePath: '/resume.pdf',
+  resumePath: `${import.meta.env.BASE_URL}resume.pdf`,
   /** Portrait shown in the Home "About me" slide. Replace this file. */
-  portrait: '/images/about/photo.jpeg',
+  portrait: `${import.meta.env.BASE_URL}images/about/photo.jpeg`,
   socials: {
     github: 'https://github.com/Sidharth-82',
     linkedin: 'https://www.linkedin.com/in/sidharthsreeram/',
@@ -27,7 +27,7 @@ export const site = {
 
 /** The tabs shown in the top tab bar (Home is the immersive hub). */
 export const navTabs: NavTab[] = [
-  { href: '/', label: 'Home' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/roadmap', label: 'Roadmap' },
+  { href: import.meta.env.BASE_URL, label: 'Home' },
+  { href: `${import.meta.env.BASE_URL}projects`, label: 'Projects' },
+  { href: `${import.meta.env.BASE_URL}roadmap`, label: 'Roadmap' },
 ];

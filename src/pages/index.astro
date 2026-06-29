@@ -26,14 +26,14 @@ const featured: ProjectData[] = (await getCollection('projects'))
 // The captivating, animated navigation into each section.
 const portals: Portal[] = [
   {
-    href: '/projects',
+    href: `${import.meta.env.BASE_URL}projects`,
     title: 'Projects',
     description: 'A gallery of things I have designed, built, and broken.',
     accent: 'accent',
     icon: '🛠️',
   },
   {
-    href: '/roadmap',
+    href: `${import.meta.env.BASE_URL}roadmap`,
     title: 'Learning Roadmap',
     description: 'An interactive timeline of how I got here — and where I am headed.',
     accent: 'accent-2',
@@ -142,7 +142,7 @@ const slides: Slide[] = [
           <h2 class="text-3xl font-bold sm:text-4xl">
             Featured <span class="text-accent">Projects</span>
           </h2>
-          <a href="/projects" class="text-sm font-medium text-accent hover:brightness-110">
+          <a href={`${import.meta.env.BASE_URL}projects`} class="text-sm font-medium text-accent hover:brightness-110">
             View all →
           </a>
         </div>

@@ -29,8 +29,9 @@ export default function TabBar({ pathname }: Props) {
     };
   }, []);
 
+  const base = import.meta.env.BASE_URL;
   const isActive = (href: string) =>
-    href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+    href === base ? path === base : path === href || path.startsWith(href + '/');
 
   return (
     <nav className="flex items-center gap-1 rounded-full border border-border bg-surface/80 p-1 backdrop-blur">
