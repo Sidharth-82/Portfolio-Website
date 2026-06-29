@@ -4,9 +4,8 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  // If you later deploy to GitHub Pages under a sub-path, set these:
-  // site: 'https://<user>.github.io',
-  // base: '/<repo-name>',
+  site: 'https://Sidharth-82.github.io',
+  base: '/Portfolio-Website',
   integrations: [
     react(),
     // We import our own global.css (with the @tailwind directives + theme
