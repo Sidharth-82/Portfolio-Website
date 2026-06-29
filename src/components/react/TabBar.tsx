@@ -29,9 +29,15 @@ export default function TabBar({ pathname }: Props) {
     };
   }, []);
 
-  const base = import.meta.env.BASE_URL;
-  const isActive = (href: string) =>
-    href === base ? path === base : path === href || path.startsWith(href + '/');
+  // Normalize trailing slashes so `/Portfolio-Website/` and `/Portfolio-Website`
+  // (or `/projects` and `/projects/`) compare equal across dev/Pages.
+  const norm = (s: string) => s.replace(/\/+$/, '') || '/';
+  const home = norm(import.meta.env.BASE_URL);
+  const isActive = (href: string) => {
+    const h = norm(href);
+    const p = norm(path);
+    return h === home ? p === home : p === h || p.startsWith(h + '/');
+  };
 
   return (
     <nav className="flex items-center gap-1 rounded-full border border-border bg-surface/80 p-1 backdrop-blur">

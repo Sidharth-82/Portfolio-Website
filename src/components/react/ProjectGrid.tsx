@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Modal from './Modal';
+import { withBase } from '../../config/site';
 
 export interface ProjectData {
   slug: string;
@@ -41,7 +42,7 @@ export default function ProjectGrid({ projects }: Props) {
           >
             <div className="relative aspect-[16/9] overflow-hidden">
               <img
-                src={p.image}
+                src={withBase(p.image)}
                 alt={p.title}
                 loading="lazy"
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
@@ -66,7 +67,7 @@ export default function ProjectGrid({ projects }: Props) {
         {active && (
           <article>
             <div className="relative mb-5 aspect-[16/9] overflow-hidden rounded-xl">
-              <img src={active.image} alt={active.title} className="h-full w-full object-cover" />
+              <img src={withBase(active.image)} alt={active.title} className="h-full w-full object-cover" />
             </div>
             <h2 className="text-2xl font-bold">{active.title}</h2>
             <div className="mt-2 flex flex-wrap gap-1.5">

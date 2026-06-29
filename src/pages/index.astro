@@ -9,7 +9,7 @@ import SlideDots from '../components/react/SlideDots.tsx';
 import type { Portal } from '../components/react/HomeHub.tsx';
 import type { ProjectData } from '../components/react/ProjectGrid.tsx';
 import type { Slide } from '../components/react/SlideDots.tsx';
-import { site } from '../config/site';
+import { site, withBase } from '../config/site';
 
 // About + future goals prose (rendered to HTML at build time).
 const about = await getEntry('about', 'about-me');
@@ -26,14 +26,14 @@ const featured: ProjectData[] = (await getCollection('projects'))
 // The captivating, animated navigation into each section.
 const portals: Portal[] = [
   {
-    href: `${import.meta.env.BASE_URL}projects`,
+    href: withBase('/projects'),
     title: 'Projects',
     description: 'A gallery of things I have designed, built, and broken.',
     accent: 'accent',
     icon: '🛠️',
   },
   {
-    href: `${import.meta.env.BASE_URL}roadmap`,
+    href: withBase('/roadmap'),
     title: 'Learning Roadmap',
     description: 'An interactive timeline of how I got here — and where I am headed.',
     accent: 'accent-2',
@@ -142,7 +142,7 @@ const slides: Slide[] = [
           <h2 class="text-3xl font-bold sm:text-4xl">
             Featured <span class="text-accent">Projects</span>
           </h2>
-          <a href={`${import.meta.env.BASE_URL}projects`} class="text-sm font-medium text-accent hover:brightness-110">
+          <a href={withBase('/projects')} class="text-sm font-medium text-accent hover:brightness-110">
             View all →
           </a>
         </div>
