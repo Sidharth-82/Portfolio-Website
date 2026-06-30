@@ -19,6 +19,10 @@ interface Props {
   projects: ProjectData[];
 }
 
+/** A project's `image` may also point to a video file — detect it by extension. */
+const VIDEO_RE = /\.(mp4|webm|ogg|ogv|mov|m4v)$/i;
+const isVideo = (src: string) => VIDEO_RE.test(src.split(/[?#]/)[0]);
+
 /**
  * Modular project tiles. Each tile opens a popup with the full description and
  * an optional GitHub link. Add a project by adding a markdown file — no code
@@ -88,12 +92,29 @@ export default function ProjectGrid({ projects }: Props) {
             whileHover={{ y: -4 }}
           >
             <div className="relative aspect-[16/9] overflow-hidden">
-              <img
-                src={withBase(p.image)}
-                alt={p.title}
-                loading="lazy"
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-              />
+              {isVideo(p.image) ? (
+                <video
+                  src={withBase(p.image)}
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label={p.title}
+                  onMouseEnter={(e) => void e.currentTarget.play().catch(() => {})}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.pause();
+                    e.currentTarget.currentTime = 0;
+                  }}
+                  className="h-full w-full bg-black object-cover transition duration-500 group-hover:scale-105"
+                />
+              ) : (
+                <img
+                  src={withBase(p.image)}
+                  alt={p.title}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+              )}
             </div>
             <div className="p-5">
               <h3 className="text-lg font-semibold">{p.title}</h3>
@@ -113,18 +134,27 @@ export default function ProjectGrid({ projects }: Props) {
       <Modal open={!!active} onClose={close} label={active?.title}>
         {active && (
           <article>
-            <button
-              type="button"
-              onClick={() => setZoom({ src: withBase(active.image), alt: active.title })}
-              aria-label="View image fullscreen"
-              className="group relative mb-5 block aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-xl"
-            >
-              <img
+            {isVideo(active.image) ? (
+              <video
                 src={withBase(active.image)}
-                alt={active.title}
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                controls
+                playsInline
+                className="mb-5 aspect-video w-full rounded-xl border border-border bg-black"
               />
-            </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setZoom({ src: withBase(active.image), alt: active.title })}
+                aria-label="View image fullscreen"
+                className="group relative mb-5 block aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-xl"
+              >
+                <img
+                  src={withBase(active.image)}
+                  alt={active.title}
+                  className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                />
+              </button>
+            )}
             <h2 className="text-2xl font-bold">{active.title}</h2>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {active.tags.map((t) => (

@@ -130,6 +130,12 @@ and toggled by `ThemeToggle.tsx`; default follows the visitor's OS setting.
   the description body (`![alt](/images/…)`) are **click-to-zoom fullscreen**
   (`Lightbox.tsx`, layered above the modal; Esc/click/✕ to close). Embedded
   images render full-width via the `.rich-text img` rule in `global.css`.
+- **Video instead of an image** → if a project's `image` ends in a video
+  extension (`.mp4/.webm/.ogg/.mov/.m4v`, see `isVideo` in `ProjectGrid.tsx`),
+  the tile plays it muted on hover and the popup shows it with native controls
+  (no lightbox — videos use their own fullscreen). Inside a description, embed
+  video with raw `<video src="/videos/…" controls>` HTML (marked passes raw HTML
+  through; root-relative `src` gets the base path; styled by `.rich-text video`).
 - **New roadmap node** → add a `.md` to the era folder (label, sublabel?, order).
 - **New roadmap era** → add an object to `eras` in `src/config/roadmap.ts` and
   create the matching `src/content/roadmap/<collectionDir>/` folder.

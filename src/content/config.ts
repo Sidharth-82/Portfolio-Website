@@ -11,7 +11,7 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     summary: z.string(), // short text shown on the tile
-    image: z.string(), // path under /public, e.g. /images/projects/alpha.svg
+    image: z.string(), // path under /public, e.g. /images/projects/alpha.svg — may also be a video (.mp4/.webm/.mov)
     github: z.string().url().optional(), // hyperlink shown in the popup
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false), // surface on the Home page

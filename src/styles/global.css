@@ -102,4 +102,8 @@ html.dark {
     @apply my-4 w-full rounded-xl border border-border;
     cursor: zoom-in;
   }
+  /* Videos embedded in a description via raw <video> HTML in the markdown. */
+  .rich-text :where(video) {
+    @apply my-4 w-full rounded-xl border border-border bg-black;
+  }
 }

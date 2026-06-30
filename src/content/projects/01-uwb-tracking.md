@@ -19,6 +19,12 @@ markdown — `![Anchor PCB layout](/images/projects/uwb-pcb.png)`. Paths are
 root-relative to /public. They render full-width and are click-to-zoom in the
 popup (same as the hero image). The alt text is also used as the fullscreen
 label.
+
+VIDEO INSTEAD OF AN IMAGE: the frontmatter `image:` may point to a video file
+(.mp4/.webm/.mov…) — the tile plays it on hover and the popup shows it with
+native controls. To embed a video inside this description, use raw HTML:
+`<video src="/videos/uwb-demo.mp4" controls playsinline></video>` (root-relative
+src; drop the file in /public).
 -->
 
 **UWB Tag & Anchor Tracking System** is my Mechatronics capstone (Final Year
