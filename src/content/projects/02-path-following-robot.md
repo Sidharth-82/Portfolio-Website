@@ -19,6 +19,8 @@ Pure Pursuit) or a frame of the detected red path from the portfolio PDF
 robot that detects and tracks a red line on the ground in real time, built to
 execute a Lego-figurine search-and-retrieval mission.
 
+![Detection Flowchart](/images/projects/Camera-Position-Flowchart.png)
+
 ## Highlights
 
 - Built a real-time computer-vision system on a **Raspberry Pi 5** using
