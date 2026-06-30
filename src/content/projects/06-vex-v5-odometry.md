@@ -1,10 +1,10 @@
 ---
 title: Vex V5 Robotics — Odometry & PID Control
 summary: A C++ control system with odometry tracking and PID loops for precise autonomous field movement.
-image: /images/projects/vex-v5-odometry.svg
+image: /images/projects/vex-tracking-wheels.jpg
 tags: [C++, Odometry, PID, Kinematics]
 featured: true
-order: 10
+order: 6
 ---
 
 <!--
