@@ -124,7 +124,12 @@ and toggled by `ThemeToggle.tsx`; default follows the visitor's OS setting.
 ## 5. How to extend (modularity summary)
 
 - **New project** → add `src/content/projects/<name>.md` (frontmatter:
-  title, summary, image, github?, tags, featured, order). Auto-appears.
+  title, summary, image, github?, tags, featured, order). Auto-appears. Omit
+  `github` to hide the "View on GitHub" button.
+- **Images in a project popup** → the hero `image` and any markdown images in
+  the description body (`![alt](/images/…)`) are **click-to-zoom fullscreen**
+  (`Lightbox.tsx`, layered above the modal; Esc/click/✕ to close). Embedded
+  images render full-width via the `.rich-text img` rule in `global.css`.
 - **New roadmap node** → add a `.md` to the era folder (label, sublabel?, order).
 - **New roadmap era** → add an object to `eras` in `src/config/roadmap.ts` and
   create the matching `src/content/roadmap/<collectionDir>/` folder.

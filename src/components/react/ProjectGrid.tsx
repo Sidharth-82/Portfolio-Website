@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Modal from './Modal';
+import Lightbox from './Lightbox';
 import { withBase } from '../../config/site';
 
 export interface ProjectData {
@@ -25,6 +26,18 @@ interface Props {
  */
 export default function ProjectGrid({ projects }: Props) {
   const [active, setActive] = useState<ProjectData | null>(null);
+  // Fullscreen image viewer (hero image + any image in the description).
+  const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
+
+  // Open the lightbox when a description image is clicked (the HTML is injected
+  // via dangerouslySetInnerHTML, so we delegate from the container).
+  const onRichTextClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'IMG') {
+      const img = target as HTMLImageElement;
+      setZoom({ src: img.currentSrc || img.src, alt: img.alt });
+    }
+  };
 
   // Deep-linking: a link to `/projects#<slug>` (e.g. from a roadmap popup)
   // opens that project's popup directly. We re-check on initial load, after
@@ -100,9 +113,18 @@ export default function ProjectGrid({ projects }: Props) {
       <Modal open={!!active} onClose={close} label={active?.title}>
         {active && (
           <article>
-            <div className="relative mb-5 aspect-[16/9] overflow-hidden rounded-xl">
-              <img src={withBase(active.image)} alt={active.title} className="h-full w-full object-cover" />
-            </div>
+            <button
+              type="button"
+              onClick={() => setZoom({ src: withBase(active.image), alt: active.title })}
+              aria-label="View image fullscreen"
+              className="group relative mb-5 block aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-xl"
+            >
+              <img
+                src={withBase(active.image)}
+                alt={active.title}
+                className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+              />
+            </button>
             <h2 className="text-2xl font-bold">{active.title}</h2>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {active.tags.map((t) => (
@@ -111,7 +133,11 @@ export default function ProjectGrid({ projects }: Props) {
                 </span>
               ))}
             </div>
-            <div className="rich-text mt-4" dangerouslySetInnerHTML={{ __html: active.html }} />
+            <div
+              className="rich-text mt-4"
+              onClick={onRichTextClick}
+              dangerouslySetInnerHTML={{ __html: active.html }}
+            />
             {active.github?.trim() && (
               <a
                 href={active.github}
@@ -126,6 +152,8 @@ export default function ProjectGrid({ projects }: Props) {
           </article>
         )}
       </Modal>
+
+      <Lightbox src={zoom?.src ?? null} alt={zoom?.alt} onClose={() => setZoom(null)} />
     </>
   );
 }

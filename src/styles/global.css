@@ -97,4 +97,9 @@ html.dark {
   .rich-text :where(code) {
     @apply rounded bg-surface-2 px-1.5 py-0.5 text-sm;
   }
+  /* Images embedded in a description; click to open fullscreen (see ProjectGrid). */
+  .rich-text :where(img) {
+    @apply my-4 w-full rounded-xl border border-border;
+    cursor: zoom-in;
+  }
 }

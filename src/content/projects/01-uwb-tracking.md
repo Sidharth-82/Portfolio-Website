@@ -13,6 +13,12 @@ IMAGE NEEDED: Replace /images/projects/uwb-tracking.svg with the custom anchor
 PCB render (DW3110 / STM32H750 layout) and/or the React + ThreeJS web app
 showing tags on an uploaded floorplan. Both appear in the portfolio PDF
 ("FYDP - UWB Tracking System"). A PCB stack-up diagram also works well here.
+
+ADDING MORE IMAGES: drop extra images anywhere in this description with normal
+markdown — `![Anchor PCB layout](/images/projects/uwb-pcb.png)`. Paths are
+root-relative to /public. They render full-width and are click-to-zoom in the
+popup (same as the hero image). The alt text is also used as the fullscreen
+label.
 -->
 
 **UWB Tag & Anchor Tracking System** is my Mechatronics capstone (Final Year
