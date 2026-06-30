@@ -11,7 +11,7 @@ const projects: ProjectData[] = (await getCollection('projects'))
 ---
 
 <BaseLayout title="Projects" description="Projects I have designed and built.">
-  <section class="mx-auto max-w-6xl px-4 py-12">
+  <section class="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col px-4 py-12 sm:px-6 lg:px-8">
     <header class="mb-10">
       <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
         <span class="text-accent">Projects</span>
@@ -20,6 +20,6 @@ const projects: ProjectData[] = (await getCollection('projects'))
         Click any tile for a detailed write-up and a link to the source.
       </p>
     </header>
-    <ProjectGrid client:load projects={projects} />
+    <ProjectGrid client:load projects={projects} fill />
   </section>
 </BaseLayout>

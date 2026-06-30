@@ -17,6 +17,8 @@ export interface ProjectData {
 
 interface Props {
   projects: ProjectData[];
+  /** When true, the grid stretches to fill its parent's height (standalone page). */
+  fill?: boolean;
 }
 
 /** A project's `image` may also point to a video file — detect it by extension. */
@@ -28,7 +30,7 @@ const isVideo = (src: string) => VIDEO_RE.test(src.split(/[?#]/)[0]);
  * an optional GitHub link. Add a project by adding a markdown file — no code
  * change needed.
  */
-export default function ProjectGrid({ projects }: Props) {
+export default function ProjectGrid({ projects, fill = false }: Props) {
   const [active, setActive] = useState<ProjectData | null>(null);
   // Fullscreen image viewer (hero image + any image in the description).
   const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
@@ -79,7 +81,12 @@ export default function ProjectGrid({ projects }: Props) {
 
   return (
     <>
-      <div className="grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        className={[
+          'grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+          fill ? 'min-h-0 flex-1' : '',
+        ].join(' ')}
+      >
         {projects.map((p, i) => (
           <motion.button
             key={p.slug}

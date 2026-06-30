@@ -104,7 +104,7 @@ export default function Timeline({ eras }: Props) {
   };
 
   return (
-    <div className="relative">
+    <div className="relative flex min-h-0 flex-1 flex-col justify-center">
       <AnimatePresence mode="wait">
         {!activeEra ? (
           /* ─────────────── Top level: the eras (circular) ─────────────── */
