@@ -4,15 +4,16 @@ sublabel: "2026"
 order: 4
 ---
 
-**Tier 1 · Foundation — Depth, geometry & multi-view.** Recover 3-D structure from
-2-D images — the bridge from appearance to spatial perception.
+**Tier 1 · Foundations — tracking & lanes.** Add time and structured outputs, and
+close out the foundational primitives.
 
-- **Focus:** camera models, epipolar geometry, monocular/stereo depth,
-  structure-from-motion. Builds on the homography work in my
-  [Path Following Robot](/projects/#path-following-robot).
-- **Key papers (suggested):** MiDaS — *Towards Robust Monocular Depth* (Ranftl et
-  al.); classic stereo / SfM references.
-- **Deliverable:** run monocular depth estimation on driving frames and project
-  pixels into a metric point cloud.
+- **2D multi-object tracking (tracking-by-detection):** feed July's detector into
+  SORT / DeepSORT — a **Kalman-filter motion model**, Hungarian matching, and
+  ID-switch analysis. This first taste of motion and state estimation is what links
+  perception to vehicle motion and control downstream. *Papers:* SORT (Bewley et
+  al.), DeepSORT (Wojke et al.). *Dataset:* KITTI tracking / MOT17.
+- **Lane detection:** fit lane boundaries as polynomials via row-wise
+  classification, not just segmentation masks. *Reference:* Ultra-Fast-Lane-
+  Detection. *Dataset:* TuSimple.
 
-<!-- TODO: confirm depth method + dataset for this month. -->
+End of Tier 1 — every primitive solid and individually written up.

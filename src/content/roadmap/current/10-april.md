@@ -4,14 +4,14 @@ sublabel: "2027"
 order: 10
 ---
 
-**Tier 3 · Capstone — Core perception modules.** Build and integrate the
-single-frame perception components into one pipeline.
+**Tier 3 · Capstone — shared backbone & first head.** Begin a mini unified
+multi-task perception stack (in the architectural spirit of BEVFusion / UniAD): a
+**shared BEV / sparse-query backbone** feeding several task heads.
 
-- **Focus:** combine detection, segmentation, and depth into a shared BEV
-  representation.
-- **Work:** wire the Tier 1 modules (detector, segmenter, depth) into a unified
-  inference graph with consistent coordinate frames.
-- **Deliverable:** an end-to-end single-frame perception module producing BEV
-  detections + a semantic map, benchmarked against the March baseline.
-
-<!-- TODO: confirm which modules make the capstone integration cut. -->
+- **Scope & pipeline:** stand up a reproducible nuScenes-mini pipeline, choose
+  metrics (NDS / mAP, mIoU, MOTA / IDF1), and study **OpenPCDet** and
+  **mmdetection3d** as scaffolding — read the code, don't just copy it.
+- **Shared encoder + Head A:** fuse multi-camera + LiDAR into a common BEV
+  representation (combining Tier 2's fusion and lifting work), with the 3-D
+  **object-detection** head first (boxes, class, velocity).
+- Debug on a small data fraction before scaling up.

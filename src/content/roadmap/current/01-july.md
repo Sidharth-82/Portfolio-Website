@@ -5,25 +5,26 @@ order: 1
 ---
 
 <!--
-DRAFT ROADMAP — refine the specifics. This 12-node "Future Plan" era is a
-three-tier computer-vision / AI learning roadmap (Jul 2026 → Jun 2027):
-  • Tier 1 — Foundation   (Jul–Oct 2026)
-  • Tier 2 — Integration  (Nov 2026 – Feb 2027)
-  • Tier 3 — Capstone     (Mar–Jun 2027): unified autonomous-driving perception stack
-Suggested papers below are well-known anchors — swap in the exact ones from your
-reading list. Each month: a Focus, Key papers, and a Deliverable.
+PERCEPTION ROADMAP (Jul 2026 → Jun 2027). A 3-tier, project-based plan; every
+project is a mini paper-reproduction: build a simplified version, run one
+ablation, write a short results-style README. Compute stays light — nuScenes-mini,
+a KITTI subset, or Colab/Kaggle cover Tier 1–2; full datasets are saved for the
+capstone.
+  • Tier 1 — Foundations  (Jul–Oct 2026): one primitive at a time
+  • Tier 2 — Integration  (Nov 2026 – Mar 2027): combine primitives, think in BEV
+  • Tier 3 — Capstone     (Apr–Jun 2027): a unified multi-task perception stack
 -->
 
-**Tier 1 · Foundation — Deep Learning & CNN fundamentals.** Rebuild a rock-solid
-base in modern deep learning for vision before layering on perception-specific
-work.
+**Tier 1 · Foundations — detection & depth.** Get the core perception primitives
+solid before combining them. Driving datasets are just a rich, convenient
+testbed — the skills are general computer vision.
 
-- **Focus:** CNN architectures, training dynamics, transfer learning.
-- **Key papers (suggested):** ResNet — *Deep Residual Learning* (He et al.);
-  Batch Normalization (Ioffe & Szegedy).
-- **Deliverable:** revisit and extend the
-  [PyTorch Image Classifier](/projects/#image-classification) — re-implement a
-  ResNet block from
-  scratch and benchmark against a pretrained baseline.
-
-<!-- TODO: confirm papers + deliverable for this month. -->
+- **2D object detector + custom head:** fine-tune YOLOv8 / Faster R-CNN, then rip
+  out the head and reimplement it (anchor-based vs. anchor-free) on the pretrained
+  backbone. *Papers:* Faster R-CNN (Ren et al.), FCOS. *Ablation:* anchor vs.
+  anchor-free — mAP vs. latency.
+- **Self-supervised monocular depth:** photometric-reprojection depth, no depth
+  labels needed. *Paper:* Monodepth2 (Godard et al.). *Ablation:* error by distance
+  bucket (near vs. far). Builds on the homography work in my
+  [Path Following Robot](/projects/#path-following-robot).
+- **Datasets:** KITTI 2D / raw, BDD100K.

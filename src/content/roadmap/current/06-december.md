@@ -4,14 +4,12 @@ sublabel: "2026"
 order: 6
 ---
 
-**Tier 2 · Integration — 3-D perception & LiDAR.** Add the point-cloud modality
-that complements cameras in the autonomous-driving stack.
+**Tier 2 · Integration — camera–LiDAR fusion for 3-D detection.** Combine the two
+modalities for stronger, more robust detection.
 
-- **Focus:** point-cloud representations, voxelization, bird's-eye-view (BEV).
-- **Key papers (suggested):** PointNet / PointNet++ (Qi et al.); PointPillars
-  (Lang et al.); BEVFormer (Li et al.).
-- **Deliverable:** train a LiDAR 3-D detector on **nuScenes** and render BEV
-  detections — building on the LiDAR exposure from my
-  [Qwen 3 VQA](/projects/#qwen3-vqa) and WISE Lab work.
-
-<!-- TODO: confirm 3-D detector + dataset for this month. -->
+- Extend November's LiDAR detector with RGB: try **early fusion** (paint points
+  with image features) and **late fusion** (separate branches merged before the
+  head). Builds directly on September's calibration work. *References:* MVX-Net /
+  PointFusion concepts; BEVFusion (Liu et al.) for the modern framing.
+- **Mini-paper:** "early vs. late fusion at small scale" — report where fusion
+  helps most (occluded / far objects) and where it adds cost for no gain.

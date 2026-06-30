@@ -4,14 +4,14 @@ sublabel: "2027"
 order: 7
 ---
 
-**Tier 2 · Integration — Sensor fusion & multi-object tracking.** Combine camera +
-LiDAR and add temporal consistency across frames.
+**Tier 2 · Integration — learned BEV segmentation.** Replace the classical warp
+with a learned camera→BEV transform.
 
-- **Focus:** camera–LiDAR fusion, BEV fusion, multi-object tracking (MOT).
-- **Key papers (suggested):** BEVFusion (Liu et al.); SORT / ByteTrack for
-  tracking. Connects to the EKF sensor fusion in my
-  [Mars Rover GPS Nav](/projects/#mars-rover-gps).
-- **Deliverable:** fuse camera + LiDAR detections and run a tracker on a nuScenes
-  sequence, reporting MOTA/IDF1.
-
-<!-- TODO: confirm fusion + tracking approach for this month. -->
+- Implement a simplified **Lift-Splat-Shoot**: predict a per-pixel depth
+  distribution, "lift" image features into a 3-D frustum, "splat" them onto a BEV
+  grid, then segment (road / lane / vehicle) directly in BEV. *Paper:*
+  Lift-Splat-Shoot (Philion & Fidler) — read this one closely. *Dataset:*
+  nuScenes-mini (it has the multi-camera rig you need).
+- **Ablation:** compare directly against September's classical IPM output on the
+  same scene — that side-by-side makes a great portfolio figure and shows *why*
+  learned BEV wins (height info, non-planar roads, dynamic objects).

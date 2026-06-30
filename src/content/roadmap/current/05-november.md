@@ -4,13 +4,13 @@ sublabel: "2026"
 order: 5
 ---
 
-**Tier 2 · Integration — Transformers & attention for vision.** Transition from
-CNNs to the attention-based architectures that power modern perception and VLMs.
+**Tier 2 · Integration — 3-D object detection from LiDAR.** Start thinking in 3-D
+and in BEV space, where modern perception actually lives.
 
-- **Focus:** self-attention, Vision Transformers, set-prediction detection.
-- **Key papers (suggested):** ViT — *An Image is Worth 16×16 Words* (Dosovitskiy
-  et al.); DETR — *End-to-End Object Detection with Transformers* (Carion et al.).
-- **Deliverable:** fine-tune a ViT/DETR on a driving subset and compare against
-  the August CNN detector.
-
-<!-- TODO: confirm transformer model + comparison setup for this month. -->
+- Train **PointPillars** or **CenterPoint** to predict 3-D boxes (center, size,
+  yaw), combining voxelization from Tier 1 with anchor-free 3-D detection heads.
+  *Papers:* PointPillars (Lang et al.), CenterPoint (Yin et al.); SECOND (Yan et
+  al.) for background.
+- **Dataset:** KITTI 3-D or nuScenes-mini.
+- **Ablation:** voxel size vs. accuracy / latency — a real design trade-off every
+  perception team faces.
