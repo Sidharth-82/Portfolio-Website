@@ -79,19 +79,19 @@ export default function ProjectGrid({ projects }: Props) {
 
   return (
     <>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((p, i) => (
           <motion.button
             key={p.slug}
             onClick={() => open(p)}
-            className="card group overflow-hidden text-left hover:border-accent hover:shadow-glow"
+            className="card group flex h-full flex-col overflow-hidden text-left hover:border-accent hover:shadow-glow"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.35, delay: i * 0.06 }}
             whileHover={{ y: -4 }}
           >
-            <div className="relative aspect-[16/9] overflow-hidden">
+            <div className="relative aspect-[16/9] shrink-0 overflow-hidden">
               {isVideo(p.image) ? (
                 <video
                   src={withBase(p.image)}
@@ -116,10 +116,10 @@ export default function ProjectGrid({ projects }: Props) {
                 />
               )}
             </div>
-            <div className="p-5">
+            <div className="flex flex-1 flex-col p-5">
               <h3 className="text-lg font-semibold">{p.title}</h3>
               <p className="mt-1 text-sm text-muted">{p.summary}</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
+              <div className="mt-3 flex flex-wrap gap-1.5 pt-1 [&:not(:empty)]:mt-auto">
                 {p.tags.map((t) => (
                   <span key={t} className="chip">
                     {t}

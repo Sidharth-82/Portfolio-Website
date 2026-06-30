@@ -19,14 +19,14 @@ interface Props {
  */
 export default function HomeHub({ portals }: Props) {
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <div className="grid auto-rows-fr gap-6 md:grid-cols-2">
       {portals.map((p, i) => {
         const isSecondary = p.accent === 'accent-2';
         return (
           <motion.a
             key={p.href}
             href={p.href}
-            className="group relative overflow-hidden rounded-3xl border border-border bg-surface p-8 sm:p-10"
+            className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-surface p-8 sm:p-10"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 + i * 0.12, type: 'spring', stiffness: 120, damping: 18 }}
@@ -40,13 +40,13 @@ export default function HomeHub({ portals }: Props) {
                 isSecondary ? 'bg-accent-2' : 'bg-accent',
               ].join(' ')}
             />
-            <div className="relative z-10">
+            <div className="relative z-10 flex h-full flex-col">
               {p.icon && <div className="mb-4 text-4xl">{p.icon}</div>}
               <h3 className="text-2xl font-bold sm:text-3xl">{p.title}</h3>
               <p className="mt-2 max-w-sm text-muted">{p.description}</p>
               <span
                 className={[
-                  'mt-6 inline-flex items-center gap-2 font-semibold transition-transform group-hover:translate-x-1',
+                  'mt-6 inline-flex items-center gap-2 self-start font-semibold transition-transform group-hover:translate-x-1 [&]:mt-auto [&]:pt-6',
                   isSecondary ? 'text-accent-2' : 'text-accent',
                 ].join(' ')}
               >
