@@ -74,6 +74,34 @@ const slides: Slide[] = [
       </h1>
       <p class="mx-auto mt-6 max-w-2xl text-lg text-muted sm:text-xl">{site.tagline}</p>
 
+      <!-- Quick summary of About + Goals; each card jumps to its full slide. -->
+      <div class="mx-auto mt-8 grid w-full max-w-3xl gap-4 text-left sm:grid-cols-2">
+        <a
+          href="#about"
+          class="card group p-5 transition hover:border-accent hover:shadow-glow"
+        >
+          <h2 class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-accent">
+            <span aria-hidden>👋</span> About Me
+          </h2>
+          <p class="mt-2 text-sm text-muted">
+            A Toronto-based software developer who builds systems to understand the
+            world around — now diving into AI and computer-vision research.
+          </p>
+        </a>
+        <a
+          href="#goals"
+          class="card group p-5 transition hover:border-accent-2 hover:shadow-glow"
+        >
+          <h2 class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-accent-2">
+            <span aria-hidden>🎯</span> Future Goals
+          </h2>
+          <p class="mt-2 text-sm text-muted">
+            Following a one-year roadmap of research papers and hands-on projects
+            toward a unified autonomous-driving perception stack.
+          </p>
+        </a>
+      </div>
+
       <!-- Contact: email + socials -->
       <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
         <a href={`mailto:${site.email}`} class="btn-ghost">

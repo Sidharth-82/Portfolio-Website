@@ -20,7 +20,7 @@ export function withBase(path: string): string {
 
 export const site = {
   name: 'Sidharth Sreeram',
-  role: 'Aspiring Perception System Engineer',
+  role: 'Aspiring AI Systems Engineer',
   tagline: 'I build software to understand the world around.',
   email: 'sidharthsreeram@gmail.com',
   /** Static file served from /public. Drop your real resume at public/resume.pdf */
