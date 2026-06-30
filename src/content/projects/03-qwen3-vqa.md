@@ -9,10 +9,11 @@ order: 3
 ---
 
 <!--
-IMAGE NEEDED: Replace /images/projects/qwen3-vqa.svg with a representative image —
-e.g. a NuScenes camera frame with a sample VQA prompt/answer overlay, or a
-training-loss / pipeline diagram. No image for this one exists in the portfolio
-PDF, so a new screenshot or diagram is needed.
+IMAGE: /images/projects/qwen3-vqa.svg is a custom-designed thumbnail (surround
+cameras + LiDAR_TOP -> VLM Q&A). Optionally swap for a real screenshot once you
+have one — strong options: a NuScenes 6-camera surround grid with a VQA
+prompt/answer overlay, a LiDAR point-cloud render, or the training-loss curve
+from the notebook (see recommendations in chat).
 -->
 
 **Qwen 3 VQA Model Tuning** fine-tunes the Qwen 3 vision-language model to perform
