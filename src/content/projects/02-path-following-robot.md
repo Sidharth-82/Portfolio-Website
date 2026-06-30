@@ -28,8 +28,8 @@ execute a Lego-figurine search-and-retrieval mission.
 - **Camera calibration & distortion correction** — used
   `findChessboardCorners()` / `calibrateCamera()` to compute intrinsics, then
   `undistort()` / `initUndistortRectifyMap()` for geometrically accurate frames.
-- **Perspective transform** — applied a homography (`getOptimalNewCameraMatrix()`
-  + `findHomography()`) to map the camera view to a top-down, real-world
+- **Perspective transform** — applied a homography (`getOptimalNewCameraMatrix()' 
+/ `findHomography()`) to map the camera view to a top-down, real-world
   coordinate system for precise distance estimation.
 - **Feature extraction** — HSV thresholding (dual range for red hue wrap-around)
   + morphological filtering + `findContours()` to locate the path.

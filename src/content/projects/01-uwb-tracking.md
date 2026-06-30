@@ -2,7 +2,7 @@
 title: UWB Tag & Anchor Tracking System
 summary: Capstone (FYDP) — a high-precision Ultra-Wideband system that locates people in crowded indoor/outdoor spaces.
 image: /images/projects/uwb-tracking.svg
-github: https://github.com/Location-Tracking-FYDP
+# github: https://github.com/Location-Tracking-FYDP
 tags: [C++, TypeScript, PCBA, UWB, React, ThreeJS, PostgreSQL, Docker]
 featured: true
 order: 1
@@ -43,7 +43,7 @@ separation.
   a **Weighted Least Squares + Firefly Optimization** algorithm for sub-meter
   accuracy with minimal communication and battery use.
 - Synchronized anchor clocks with SYNC and FOLLOW-UP frames for nanosecond-level
-  timestamp reliability across the network (targeting ~1 m 3-D accuracy).
+  timestamp reliability across the network.
 - Built the backend — **PostgreSQL, Redis cache, and a REST API** — to ingest
   timestamps, compute position every second, and serve results to the frontend.
 - Created a **React + ThreeJS** frontend that renders real-time 2D/3D tag
@@ -58,5 +58,5 @@ real-time embedded firmware, optimization-based localization math, and a full
 web stack. The hardest and most rewarding part was making nanosecond clock
 synchronization reliable enough for the TDoA math to produce trustworthy
 positions.
-
-Live demo: [uwb-tracking-site.web.app](https://uwb-tracking-site.web.app)
+<!-- 
+Live demo: [uwb-tracking-site.web.app](https://uwb-tracking-site.web.app) -->
