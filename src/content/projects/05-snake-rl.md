@@ -1,7 +1,7 @@
 ---
 title: Snake Game Reinforcement Learning
 summary: A Deep Q-Network trained in PyTorch to learn optimal control policies for the Snake game.
-image: /images/projects/snake-rl.svg
+image: /videos/projects/Snake_video.mp4
 github: https://github.com/Sidharth-82/PyTorch-Projects/blob/main/SnakeGame/DESCRIPTION.md
 tags: [Python, PyTorch, Deep Q-Networks, Reinforcement Learning]
 featured: true
@@ -17,6 +17,8 @@ portfolio PDF for this project.
 **Snake Game Reinforcement Learning** trains a **Deep Q-Network (DQN)** in PyTorch
 to learn optimal control policies for the Snake game through reward-based
 optimization.
+
+![Game Score Training Graph](/images/projects/snake_graph.png)
 
 ## Highlights
 
