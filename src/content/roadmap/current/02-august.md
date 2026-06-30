@@ -16,5 +16,6 @@ first hands-on look at 3-D data.
   PointNet++ (Qi et al.). *Dataset:* ModelNet for warm-up, then KITTI object
   clusters.
 
-This builds directly on the CNN/transfer-learning footing from my
-[PyTorch Image Classifier](/projects/#image-classification).
+This builds directly on the CNN and transfer-learning fundamentals of training
+an image classifier in PyTorch — fine-tuning a pretrained backbone on a labeled
+dataset.

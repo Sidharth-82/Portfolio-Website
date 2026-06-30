@@ -25,7 +25,9 @@ throughout.
 
 **Projects & teams**
 
-- Joined the **Midnight Sun Solar Car Team** and began the
-  [pedal control board](/projects/#pedal-control-board) redesign.
-- Built the [Environment Reactive Robot](/projects/#reactive-robot) (MTE 121) and
-  the [Digital Linear Caliper](/projects/#digital-caliper) (MTE 202).
+- Joined the **Midnight Sun Solar Car Team** and began redesigning the
+  *pedal control board* — the driver-input board that reads the throttle/brake
+  pedals and relays those signals to the car's motor controller.
+- Built the *Environment Reactive Robot* (MTE 121) — an autonomous robot that
+  senses and responds to its surroundings — and the *Digital Linear Caliper*
+  (MTE 202), a measurement instrument with a digital position readout.

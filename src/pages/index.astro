@@ -21,7 +21,9 @@ const goalsHtml = renderMarkdown(goals!.body);
 const featured: ProjectData[] = (await getCollection('projects'))
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order)
-  .map((p) => ({ slug: p.slug, ...p.data, html: renderMarkdown(p.body) }));
+  // Strip the numeric ordering prefix so deep-link slugs match across pages:
+  // `01-uwb-tracking` -> `uwb-tracking` (keeps `/projects/#<slug>` links working).
+  .map((p) => ({ slug: p.slug.replace(/^\d+-/, ''), ...p.data, html: renderMarkdown(p.body) }));
 
 // The captivating, animated navigation into each section.
 const portals: Portal[] = [
