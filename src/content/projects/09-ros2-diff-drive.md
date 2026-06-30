@@ -1,7 +1,7 @@
 ---
 title: ROS2 Differential Drive Robot Simulation
 summary: A simulated 2-wheel differential-drive robot built with ROS2, Nav2, and the SLAM Toolbox.
-image: /images/projects/ros2-diff-drive.svg
+image: /images/projects/diffdrive.png
 github: https://github.com/Sidharth-82/ROS2_DiffDrive_Robot_ws
 tags: [ROS2, Nav2, SLAM, Gazebo, URDF, RViz]
 featured: false

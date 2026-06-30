@@ -1,7 +1,7 @@
 ---
 title: Ball & Beam Motion Controller (MTE 484)
 summary: A ball-on-beam motion controller designed with input–output parametrization and validated on hardware.
-image: /images/projects/ball-beam-controller.svg
+image: /images/projects/ball-beam.png
 github: https://github.com/Sidharth-82/MTE484-BallBeamBalancer
 tags: [MATLAB, Simulink, Control Systems, System Identification]
 featured: false
@@ -16,9 +16,14 @@ GITHUB: confirm/replace the repo link — the portfolio notes a "publicly
 available GitHub repository" but I don't have the exact URL.
 -->
 
+
+
 **Ball & Beam Motion Controller** (MTE 484) is a control-systems project: a
 ball-on-beam controller designed using input–output parametrization through the
 Direct Design methodology, then tuned and validated on real hardware.
+
+![controller results](/images/projects/ball-beam-results.png)
+
 
 ## Highlights
 
@@ -32,6 +37,8 @@ Direct Design methodology, then tuned and validated on real hardware.
   robustness under LTI design constraints.
 - Completed hardware testing and tuning, comparing real-world performance against
   theoretical and simulated results.
+
+![Controller Chart](/images/projects/ball-beam-control-chart.png)
 
 ## What I learned
 
