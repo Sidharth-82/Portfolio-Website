@@ -21,7 +21,7 @@ export function withBase(path: string): string {
 export const site = {
   name: 'Sidharth Sreeram',
   role: 'Aspiring AI Systems Engineer',
-  tagline: 'I build software to understand the world around.',
+  tagline: 'I build software that understands the world around me',
   email: 'sidharthsreeram@gmail.com',
   /** Static file served from /public. Drop your real resume at public/resume.pdf */
   resumePath: withBase('/resume.pdf'),
