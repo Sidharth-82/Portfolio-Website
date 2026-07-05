@@ -6,12 +6,12 @@ icon: "🟦"
 featured: false
 order: 3
 aliases: ["JavaScript"]
-courses:
-  - title: "TODO: a TypeScript/JS course"
-    provider: "TODO: provider"
-    link: https://example.com
-    summary: "TODO: what this covered. No certificate → whole card is a link."
-    certificates: []
+courses: []
+  # - title: "TODO: a TypeScript/JS course"
+  #   provider: "TODO: provider"
+  #   link: https://example.com
+  #   summary: "TODO: what this covered. No certificate → whole card is a link."
+  #   certificates: []
 ---
 
 <!-- SCAFFOLD: replace placeholders; projects auto-derive from tags. -->

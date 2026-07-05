@@ -6,13 +6,13 @@ icon: "💠"
 featured: true
 order: 2
 aliases: []
-courses:
-  - title: "TODO: e.g. Modern C++ course"
-    provider: "TODO: provider"
-    link: https://example.com
-    summary: "TODO: what this covered. This card shows a certificate."
-    certificates:
-      - /images/certificates/placeholder-certificate.svg
+courses: []
+  # - title: "TODO: e.g. Modern C++ course"
+  #   provider: "TODO: provider"
+  #   link: https://example.com
+  #   summary: "TODO: what this covered. This card shows a certificate."
+  #   certificates:
+  #     - /images/certificates/placeholder-certificate.svg
 ---
 
 <!-- SCAFFOLD: replace placeholders; projects auto-derive from tags. -->

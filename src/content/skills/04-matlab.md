@@ -6,12 +6,12 @@ icon: "📊"
 featured: false
 order: 4
 aliases: ["Simulink"]
-courses:
-  - title: "TODO: a MATLAB/Simulink course"
-    provider: "TODO: provider"
-    link: https://example.com
-    summary: "TODO: what this covered."
-    certificates: []
+courses: []
+  # - title: "TODO: a MATLAB/Simulink course"
+  #   provider: "TODO: provider"
+  #   link: https://example.com
+  #   summary: "TODO: what this covered."
+  #   certificates: []
 ---
 
 <!-- SCAFFOLD: replace placeholders; projects auto-derive from tags. -->

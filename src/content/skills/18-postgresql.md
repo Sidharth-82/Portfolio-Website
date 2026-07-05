@@ -6,12 +6,12 @@ icon: "🐘"
 featured: false
 order: 18
 aliases: []
-courses:
-  - title: "TODO: e.g. SQL / PostgreSQL course"
-    provider: "TODO: provider"
-    link: https://example.com
-    summary: "TODO: what this covered."
-    certificates: []
+courses: []
+#   - title: "TODO: e.g. SQL / PostgreSQL course"
+#     provider: "TODO: provider"
+#     link: https://example.com
+#     summary: "TODO: what this covered."
+#     certificates: []
 ---
 
 <!-- SCAFFOLD: replace placeholders; projects auto-derive from tags. -->

@@ -6,13 +6,13 @@ icon: "🤖"
 featured: true
 order: 7
 aliases: ["Llama 3", "Qwen 3", "LoRA", "RoPE", "GQA"]
-courses:
-  - title: "TODO: e.g. LLMs / NLP course"
-    provider: "TODO: provider"
-    link: https://example.com
-    summary: "TODO: what this covered. This card shows a certificate."
-    certificates:
-      - /images/certificates/placeholder-certificate.svg
+courses: []
+  # - title: "TODO: e.g. LLMs / NLP course"
+  #   provider: "TODO: provider"
+  #   link: https://example.com
+  #   summary: "TODO: what this covered. This card shows a certificate."
+  #   certificates:
+  #     - /images/certificates/placeholder-certificate.svg
 ---
 
 <!-- SCAFFOLD: replace placeholders; projects auto-derive from tags. -->

@@ -7,17 +7,17 @@ featured: true
 order: 1
 aliases: []
 courses:
-  - title: "TODO: e.g. Python for Everybody"
-    provider: "TODO: provider"
-    link: https://example.com
-    summary: "TODO: one line on what this course covered. This card shows a certificate."
+  - title: "Learning Python"
+    provider: "LinkedIn Learning - Joe Marini"
+    link: https://www.linkedin.com/learning/learning-python-2021/learning-python-22821893
+    summary: "An overview of the installation process, Python syntax, and an example of how to construct and run a Python program."
     certificates:
-      - /images/certificates/placeholder-certificate.svg
-  - title: "TODO: a course with no certificate"
-    provider: "TODO: provider"
-    link: https://example.com
-    summary: "TODO: no certificate here, so the whole card becomes a click-through link."
-    certificates: []
+      - /images/certificates/PythonBegin.jpg
+  # - title: "TODO: a course with no certificate"
+  #   provider: "TODO: provider"
+  #   link: https://example.com
+  #   summary: "TODO: no certificate here, so the whole card becomes a click-through link."
+  #   certificates: []
 ---
 
 <!--

@@ -6,12 +6,12 @@ icon: "🐳"
 featured: false
 order: 17
 aliases: []
-courses:
-  - title: "TODO: e.g. Docker course"
-    provider: "TODO: provider"
-    link: https://example.com
-    summary: "TODO: what this covered."
-    certificates: []
+courses: []
+#   - title: "TODO: e.g. Docker course"
+#     provider: "TODO: provider"
+#     link: https://example.com
+#     summary: "TODO: what this covered."
+#     certificates: []
 ---
 
 <!-- SCAFFOLD: replace placeholders; projects auto-derive from tags. -->
