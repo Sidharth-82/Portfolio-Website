@@ -18,16 +18,27 @@ timeline entry never requires touching code.
   a right-edge **dot navigator** (`SlideDots.tsx`) tracks/jumps between slides.
   The five slides are: (1) Hero + résumé download, (2) **About me with a
   portrait image** (`site.portrait`), (3) Future Goals, (4) Featured Projects,
-  (5) "Where to next?" animated **portal cards** + the footer. The Home page
-  passes `showFooter={false}` and renders its own footer inside the last slide.
+  (5) **Featured Skills**, (6) "Where to next?" animated **portal cards** + the
+  footer. The Home page passes `showFooter={false}` and renders its own footer
+  inside the last slide.
 - **Projects (`/projects`)** — modular tile grid; clicking a tile opens a popup
-  with a detailed description + a GitHub hyperlink.
+  with a detailed description + a GitHub hyperlink. In the popup, tags that
+  correspond to a defined **skill** are clickable and open that skill's popup
+  in place (`SkillModal`); clicking a project inside a skill popup swaps back to
+  that project's popup.
+- **Skills (`/skills`)** — searchable, category-filterable tile grid. Each tile
+  shows the **level** (Beginner→Expert as a badge + 4-segment meter), **#
+  projects**, and **# courses**. Clicking a tile opens a popup with the
+  courses/certifications (certificate images zoom via `Lightbox`; a course with
+  no certificate becomes a single click-through card) and the projects that use
+  the skill (mini-tiles that deep-link to `/projects#<slug>`). A skill's projects
+  are **derived from project `tags`** (name or `alias` match) — never hand-listed.
 - **Learning Roadmap (`/roadmap`)** — interactive, **zoomable timeline** of
   "eras". Click an era to zoom into its nodes (years or months); click a node to
   open a popup. Designed to grow (add more eras over time).
 
-Inner pages (Projects, Roadmap) show an **animated top tab bar**; the Home page
-deliberately hides it in favor of the portal cards.
+Inner pages (Projects, Skills, Roadmap) show an **animated top tab bar**; the
+Home page deliberately hides it in favor of the portal cards.
 
 ---
 
@@ -56,15 +67,21 @@ portfolio/
 ├─ public/
 │  ├─ resume.pdf             # ← static résumé download (replace this)
 │  ├─ favicon.svg
-│  └─ images/projects/*.svg  # placeholder tile images
+│  └─ images/
+│     ├─ projects/*.svg      # placeholder tile images
+│     └─ certificates/*      # ← skill certificate images (+ placeholder SVG)
 └─ src/
    ├─ styles/global.css      # ★ THEME ACCENT COLORS live here (CSS vars)
    ├─ config/
    │  ├─ site.ts             # name, role, tagline, email, socials, resumePath, navTabs
    │  └─ roadmap.ts          # the list of timeline "eras" (modular; add here)
+   ├─ lib/
+   │  ├─ markdown.ts         # marked → HTML, base-path-aware (build time)
+   │  └─ skills.ts           # loadSkills(): resolves skills ↔ projects at build
    ├─ content/
    │  ├─ config.ts           # Zod schemas for all collections
    │  ├─ projects/*.md       # one file per project tile
+   │  ├─ skills/*.md         # one file per skill (level, category, courses, aliases)
    │  ├─ about/about-me.md   # About-me prose
    │  ├─ goals/future-goals.md
    │  └─ roadmap/
@@ -75,7 +92,10 @@ portfolio/
    │  ├─ astro/Footer.astro
    │  └─ react/                 # interactive islands
    │     ├─ Modal.tsx           # shared animated/accessible modal
-   │     ├─ ProjectGrid.tsx     # tiles + project popup
+   │     ├─ Lightbox.tsx        # fullscreen image viewer (layers above a modal)
+   │     ├─ ProjectGrid.tsx     # tiles + project popup (tags open SkillModal)
+   │     ├─ SkillModal.tsx      # shared skill popup + SkillData types + level badge/meter
+   │     ├─ SkillsExplorer.tsx  # skills page search/filter/tiles (+ Home featured strip)
    │     ├─ Timeline.tsx        # zoomable roadmap, centered CIRCULAR nodes + popup
    │     ├─ HomeHub.tsx         # animated home portal cards
    │     ├─ SlideDots.tsx       # Home full-screen slide dot navigator (IntersectionObserver)
@@ -84,6 +104,7 @@ portfolio/
    └─ pages/
       ├─ index.astro          # Home hub (showTabBar={false})
       ├─ projects.astro
+      ├─ skills.astro
       └─ roadmap.astro
 ```
 
@@ -93,6 +114,13 @@ body to HTML with `marked`, and pass plain serializable objects to the React
 islands as props. React never reads the filesystem; it just renders the data.
 
 - Projects: `getCollection('projects')` → `ProjectData[]` → `<ProjectGrid>`.
+- Skills: `loadSkills()` (`src/lib/skills.ts`) reads the `skills` + `projects`
+  collections and returns `SkillData[]` — each skill's `projects` are the ones
+  whose `tags` match its `name`/`aliases` (case-insensitive), so counts stay in
+  sync automatically. Fed to `<SkillsExplorer>` (skills page + Home slide) and to
+  `<ProjectGrid skills={…}>` (to make matching tags clickable). Image/certificate
+  paths stay root-relative; the React components apply `withBase` (like projects).
+  `buildTagSkillMap()` maps each tag → the skill it opens (lowest `order` wins).
 - Roadmap: `getCollection('roadmap')` is split into eras by **folder name**
   (`node.id.split('/')[0]` matches `era.collectionDir` in `src/config/roadmap.ts`).
   So a node's era is derived from its folder — just drop a file in to add one.
@@ -136,6 +164,14 @@ and toggled by `ThemeToggle.tsx`; default follows the visitor's OS setting.
   (no lightbox — videos use their own fullscreen). Inside a description, embed
   video with raw `<video src="/videos/…" controls>` HTML (marked passes raw HTML
   through; root-relative `src` gets the base path; styled by `.rich-text video`).
+- **New skill** → add `src/content/skills/<name>.md` (frontmatter: name, level,
+  category, icon?, featured, order, aliases[], courses[]). Its **projects** are
+  auto-derived from project `tags` matching `name`/`aliases` — don't list them.
+  A course with `certificates: [/images/certificates/…]` shows the image(s)
+  (click to zoom); omit them to render the course as one click-through link card.
+  Set `featured: true` to surface it on the Home "Featured Skills" slide. Keep
+  `aliases` roughly unique — if a tag maps to several skills, the lowest-`order`
+  skill wins the clickable chip on the projects page.
 - **New roadmap node** → add a `.md` to the era folder (label, sublabel?, order).
 - **New roadmap era** → add an object to `eras` in `src/config/roadmap.ts` and
   create the matching `src/content/roadmap/<collectionDir>/` folder.
@@ -180,3 +216,10 @@ notes are in `astro.config.mjs`).
 - About me & Future Goals prose are **author-written** (not lorem).
 - Project tile images are still generated **labeled SVG placeholders**
   (`public/images/projects/*.svg`); `resume.pdf` is still a **placeholder PDF**.
+- **Skills** (`src/content/skills/*.md`) are a **SCAFFOLD**: 19 curated skills
+  drawn from the real project tags, grouped into 4 categories, with best-guess
+  `level`s and **placeholder courses** (each field marked `TODO`). Replace the
+  course titles/providers/links/summaries and each skill's `level` with real
+  data, and drop real certificate images into `public/images/certificates/`
+  (a labeled placeholder SVG lives there now) — projects auto-derive from tags,
+  so those need no editing.

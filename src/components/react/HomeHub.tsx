@@ -19,7 +19,7 @@ interface Props {
  */
 export default function HomeHub({ portals }: Props) {
   return (
-    <div className="grid auto-rows-fr gap-6 md:grid-cols-2">
+    <div className="grid auto-rows-fr gap-6 md:grid-cols-2 lg:grid-cols-3">
       {portals.map((p, i) => {
         const isSecondary = p.accent === 'accent-2';
         return (

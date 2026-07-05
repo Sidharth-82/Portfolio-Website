@@ -5,10 +5,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Footer from '../components/astro/Footer.astro';
 import HomeHub from '../components/react/HomeHub.tsx';
 import ProjectGrid from '../components/react/ProjectGrid.tsx';
+import SkillsExplorer from '../components/react/SkillsExplorer.tsx';
 import SlideDots from '../components/react/SlideDots.tsx';
 import type { Portal } from '../components/react/HomeHub.tsx';
 import type { ProjectData } from '../components/react/ProjectGrid.tsx';
 import type { Slide } from '../components/react/SlideDots.tsx';
+import { loadSkills } from '../lib/skills';
 import { site, withBase } from '../config/site';
 
 // About + future goals prose (rendered to HTML at build time).
@@ -25,6 +27,9 @@ const featured: ProjectData[] = (await getCollection('projects'))
   // `01-uwb-tracking` -> `uwb-tracking` (keeps `/projects/#<slug>` links working).
   .map((p) => ({ slug: p.slug.replace(/^\d+-/, ''), ...p.data, html: renderMarkdown(p.body) }));
 
+// Featured skills, surfaced on the Home "Featured Skills" slide.
+const featuredSkills = (await loadSkills()).filter((s) => s.featured);
+
 // The captivating, animated navigation into each section.
 const portals: Portal[] = [
   {
@@ -35,10 +40,17 @@ const portals: Portal[] = [
     icon: '🛠️',
   },
   {
+    href: withBase('/skills'),
+    title: 'Skills',
+    description: 'The tools and techniques behind the work — with the courses and projects to prove it.',
+    accent: 'accent-2',
+    icon: '🧩',
+  },
+  {
     href: withBase('/roadmap'),
     title: 'Learning Roadmap',
     description: 'An interactive timeline of how I got here — and where I am heading.',
-    accent: 'accent-2',
+    accent: 'accent',
     icon: '🧭',
   },
 ];
@@ -49,6 +61,7 @@ const slides: Slide[] = [
   { id: 'about', label: 'About' },
   { id: 'goals', label: 'Goals' },
   { id: 'featured', label: 'Projects' },
+  { id: 'skills', label: 'Skills' },
   { id: 'explore', label: 'Explore' },
 ];
 ---
@@ -180,7 +193,25 @@ const slides: Slide[] = [
       </div>
     </section>
 
-    <!-- ═══════════ Slide 5 — Explore (navigation) + footer ═══════════ -->
+    <!-- ═══════════ Slide 5 — Featured Skills ═══════════ -->
+    <section
+      id="skills"
+      class="flex min-h-screen snap-start flex-col items-center justify-center px-4 py-20"
+    >
+      <div class="mx-auto flex min-h-[70vh] w-full max-w-screen-2xl flex-col justify-center">
+        <div class="mb-8 flex items-end justify-between gap-4">
+          <h2 class="text-3xl font-bold sm:text-4xl">
+            Featured <span class="text-accent">Skills</span>
+          </h2>
+          <a href={withBase('/skills')} class="text-sm font-medium text-accent hover:brightness-110">
+            View all →
+          </a>
+        </div>
+        <SkillsExplorer client:load skills={featuredSkills} showSearch={false} useHash={false} />
+      </div>
+    </section>
+
+    <!-- ═══════════ Slide 6 — Explore (navigation) + footer ═══════════ -->
     <section id="explore" class="flex min-h-screen snap-start flex-col px-4">
       <div class="flex flex-1 flex-col items-center justify-center py-20">
         <div class="mx-auto flex min-h-[70vh] w-full max-w-screen-2xl flex-col justify-center">
