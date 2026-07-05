@@ -37,5 +37,6 @@ export const site = {
 export const navTabs: NavTab[] = [
   { href: withBase('/'), label: 'Home' },
   { href: withBase('/projects'), label: 'Projects' },
+  { href: withBase('/skills'), label: 'Skills' },
   { href: withBase('/roadmap'), label: 'Roadmap' },
 ];

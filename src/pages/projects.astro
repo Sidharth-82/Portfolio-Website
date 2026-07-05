@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { renderMarkdown } from '../lib/markdown';
+import { loadSkills } from '../lib/skills';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectGrid from '../components/react/ProjectGrid.tsx';
 import type { ProjectData } from '../components/react/ProjectGrid.tsx';
@@ -11,6 +12,9 @@ const projects: ProjectData[] = (await getCollection('projects'))
   // human-readable: `01-uwb-tracking` -> `uwb-tracking` (matches `/projects/#<slug>`
   // links from the roadmap, same convention as roadmap.astro).
   .map((p) => ({ slug: p.slug.replace(/^\d+-/, ''), ...p.data, html: renderMarkdown(p.body) }));
+
+// Skills power the clickable tags in each project popup (open the skill popup).
+const skills = await loadSkills();
 ---
 
 <BaseLayout title="Projects" description="Projects I have designed and built.">
@@ -23,6 +27,6 @@ const projects: ProjectData[] = (await getCollection('projects'))
         Click any tile for a detailed write-up and a link to the source.
       </p>
     </header>
-    <ProjectGrid client:load projects={projects} fill />
+    <ProjectGrid client:load projects={projects} skills={skills} fill />
   </section>
 </BaseLayout>

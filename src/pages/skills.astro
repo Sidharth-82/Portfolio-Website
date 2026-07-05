@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SkillsExplorer from '../components/react/SkillsExplorer.tsx';
+import { loadSkills } from '../lib/skills';
+
+const skills = await loadSkills();
+---
+
+<BaseLayout title="Skills" description="Skills I have built through projects and coursework.">
+  <section class="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col px-4 py-12 sm:px-6 lg:px-8">
+    <header class="mb-10">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <span class="text-accent">Skills</span>
+      </h1>
+      <p class="mt-2 max-w-2xl text-muted">
+        Search or filter, then click a skill to see the courses and certifications behind it
+        and the projects where I put it to work.
+      </p>
+    </header>
+    <SkillsExplorer client:load skills={skills} />
+  </section>
+</BaseLayout>

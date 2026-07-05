@@ -1,7 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Modal from './Modal';
 import Lightbox from './Lightbox';
+import SkillModal from './SkillModal';
+import type { SkillData } from './SkillModal';
 import { withBase } from '../../config/site';
 
 export interface ProjectData {
@@ -19,6 +21,11 @@ interface Props {
   projects: ProjectData[];
   /** When true, the grid stretches to fill its parent's height (standalone page). */
   fill?: boolean;
+  /**
+   * When provided, project tags that match a skill become clickable and open
+   * that skill's popup in place (same content as the Skills page).
+   */
+  skills?: SkillData[];
 }
 
 /** A project's `image` may also point to a video file — detect it by extension. */
@@ -30,10 +37,24 @@ const isVideo = (src: string) => VIDEO_RE.test(src.split(/[?#]/)[0]);
  * an optional GitHub link. Add a project by adding a markdown file — no code
  * change needed.
  */
-export default function ProjectGrid({ projects, fill = false }: Props) {
+export default function ProjectGrid({ projects, fill = false, skills = [] }: Props) {
   const [active, setActive] = useState<ProjectData | null>(null);
   // Fullscreen image viewer (hero image + any image in the description).
   const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
+  // Skill popup opened by clicking a tag in a project's description.
+  const [activeSkill, setActiveSkill] = useState<SkillData | null>(null);
+
+  // Lowercased tag/alias -> skill, so a project tag can open its skill popup.
+  const tagSkill = useMemo(() => {
+    const map = new Map<string, SkillData>();
+    for (const s of skills) {
+      for (const key of [s.name, ...s.aliases]) {
+        const k = key.toLowerCase();
+        if (!map.has(k)) map.set(k, s);
+      }
+    }
+    return map;
+  }, [skills]);
 
   // Open the lightbox when a description image is clicked (the HTML is injected
   // via dangerouslySetInnerHTML, so we delegate from the container).
@@ -76,6 +97,16 @@ export default function ProjectGrid({ projects, fill = false }: Props) {
     setActive(null);
     if (window.location.hash) {
       history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  };
+
+  // A project mini-tile inside a skill popup was clicked: swap to that project's
+  // popup in place (we're already on the projects page) and close the skill one.
+  const openProjectBySlug = (slug: string) => {
+    const match = projects.find((p) => p.slug === slug);
+    if (match) {
+      setActiveSkill(null);
+      open(match);
     }
   };
 
@@ -164,11 +195,24 @@ export default function ProjectGrid({ projects, fill = false }: Props) {
             )}
             <h2 className="text-2xl font-bold">{active.title}</h2>
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {active.tags.map((t) => (
-                <span key={t} className="chip">
-                  {t}
-                </span>
-              ))}
+              {active.tags.map((t) => {
+                const skill = tagSkill.get(t.toLowerCase());
+                return skill ? (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setActiveSkill(skill)}
+                    title={`View ${skill.name} skill`}
+                    className="chip cursor-pointer border-accent/40 text-accent transition hover:border-accent hover:bg-accent hover:text-white"
+                  >
+                    {t}
+                  </button>
+                ) : (
+                  <span key={t} className="chip">
+                    {t}
+                  </span>
+                );
+              })}
             </div>
             <div
               className="rich-text mt-4"
@@ -189,6 +233,13 @@ export default function ProjectGrid({ projects, fill = false }: Props) {
           </article>
         )}
       </Modal>
+
+      {/* Skill popup opened by clicking a tag; layered above the project modal. */}
+      <SkillModal
+        skill={activeSkill}
+        onClose={() => setActiveSkill(null)}
+        onOpenProject={openProjectBySlug}
+      />
 
       <Lightbox src={zoom?.src ?? null} alt={zoom?.alt} onClose={() => setZoom(null)} />
     </>

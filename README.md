@@ -19,6 +19,8 @@ npm run preview  # preview the production build
 | -------------------------------- | ----------------------------------------------------------------------- |
 | Add a **project**                | Add a `.md` file to `src/content/projects/` (copy an existing one).     |
 | Mark a project as **featured**   | Set `featured: true` in its frontmatter (shows on the Home page).       |
+| Add / edit a **skill**           | Edit a `.md` file in `src/content/skills/` (level, courses, aliases).   |
+| Add a **certificate** to a skill | Drop the image in `public/images/certificates/`, list it under a course.|
 | Edit **About me**                | Edit `src/content/about/about-me.md`.                                    |
 | Edit **Future goals**            | Edit `src/content/goals/future-goals.md`.                                |
 | Add a roadmap **node** (yr/month)| Add a `.md` file to the era folder under `src/content/roadmap/<era>/`.   |
@@ -43,6 +45,34 @@ order: 1                               # lower = earlier
 
 Full markdown description shown in the popup…
 ```
+
+### Skill frontmatter
+
+```yaml
+---
+name: Python                # also matched (case-insensitive) against project tags
+level: Advanced             # Beginner | Intermediate | Advanced | Expert
+category: Languages         # groups + filters the tiles
+icon: "🐍"                  # emoji shown on the tile
+featured: true              # show on the Home "Featured Skills" slide
+order: 1                    # lower = earlier
+aliases: [Simulink]         # extra project tags that also count toward this skill
+courses:
+  - title: Course name
+    provider: Coursera
+    link: https://…         # course home page
+    summary: One line on what it covered.
+    certificates:           # image path(s) under /public — omit/[] for a link-only card
+      - /images/certificates/my-cert.png
+---
+
+Optional intro blurb shown at the top of the skill popup.
+```
+
+A skill's **projects are derived automatically** from project `tags` that equal
+its `name` or an `alias` — you never list projects by hand. A course **with** a
+certificate shows the image (click to zoom) + a link; a course **without** one
+becomes a single click-through card to the course home.
 
 ### Adding a new roadmap era (it grows over time)
 
