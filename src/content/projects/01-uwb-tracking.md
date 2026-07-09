@@ -36,8 +36,8 @@ separation.
 
 ## Highlights
 
-- Designed and fabricated custom anchor PCBs integrating the **DW3110 UWB chip,
-  STM32H750 microcontroller, RTL8189 Wi-Fi module, and LAN8710A Ethernet PHY**,
+- Designed and fabricated custom anchor PCBs integrating the **DW3110 UWB chip and
+  ESP32 microcontroller**,
   with controlled-impedance RF traces for accurate high-frequency signaling.
 - Implemented a **Time Difference of Arrival (TDoA)** localization pipeline using
   a **Weighted Least Squares + Firefly Optimization** algorithm for sub-meter
