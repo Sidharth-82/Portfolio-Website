@@ -1,12 +1,12 @@
 ---
-title: Cloud-Native AV Perception Stack (CARLA + AWS)
+title: Cloud-Native AV Perception Stack
 summary: A highway perception stack split across an onboard real-time tier and an AWS near-real-time tier, built to measure whether delayed cloud perception is still safe to act on.
 image: /videos/projects/carla-demo.mp4
-# github: https://github.com/Sidharth-82/your-carla-repo
+github: https://github.com/Sidharth-82/AWS-Cloud-Native-AV-Perception-Stack
 tags: [Python, CARLA, AWS, Docker, Computer Vision, PyTorch, Data Pipelines, ONNX, MLOps]
 featured: true
 spotlight: true
-status: Phase 2 of 7
+status: In Progress
 order: 0
 ---
 
