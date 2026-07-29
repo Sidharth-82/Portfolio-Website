@@ -135,105 +135,18 @@ Objective: a reproducible pipeline that turns N scenario configs into a stored,
 labeled dataset with a data card describing it. This is the phase that is
 finished, and the section below covers it properly.
 
-</details>
-
-<details>
-<summary>Phase 2: Build and validate the model locally (In progress)</summary>
-
-Objective: a working detector on my own data before touching cloud training.
-Open decisions: which model family, justified on accuracy versus latency versus
-memory; transfer learning versus training from scratch; camera-only for v1, with
-camera plus LiDAR fusion held back as the stronger but costlier story. Metrics
-are mAP for detection, MAE in meters for lead distance, and MOTA and IDF1 for
-tracking. Done when the model beats a defined baseline on the held-out map and I
-can render qualitative overlays. The pitfall is chasing state-of-the-art accuracy
-instead of a clean, reproducible pipeline, so the baseline gets defined before
-training starts.
-
-</details>
-
-<details>
-<summary>Phase 3: Move training to the cloud, reproducibly</summary>
-
-Objective: training that runs on AWS with tracked artifacts and versioned data.
-Decisions: managed training versus raw EC2 GPU with my own scripts, convenience
-against control; experiment tracking with MLflow or Weights and Biases; a
-containerized training job; spot versus on-demand as a cost decision. Done when a
-single command trains on AWS and lands a versioned model artifact in S3 with a
-registry entry.
-
-</details>
-
-<details>
-<summary>Phase 4: Serve the model as a real inference service</summary>
-
-Objective: an endpoint that takes a frame and returns structured perception
-results inside a latency budget defined up front. Decisions: SageMaker real-time
-endpoint versus a container on ECS or Fargate versus Lambda for a light model,
-weighed on latency, cost, and cold start; synchronous or async; ONNX conversion
-and quantization with a *measured* latency improvement rather than a claimed one;
-the API contract; autoscaling.
-
-</details>
-
-<details>
-<summary>Phase 4b: The edge variant</summary>
-
-Objective: deploy the *same* ONNX-optimized model to a constrained second target,
-the Raspberry Pi I already own from the Path Following Robot build, and benchmark
-it head to head against the cloud endpoint on an identical test set. The output is
-one comparison of latency, throughput, memory footprint, and accuracy for one
-model on two targets, plus the crossover point: at what network latency does edge
-beat cloud. Timeboxed hard, because this is the stretch goal most likely to turn
-into its own project.
-
-</details>
-
-<details>
-<summary>Phase 5: Close the loop</summary>
-
-Objective: CARLA and AWS talking in real time, with the simulator streaming
-frames out, getting perception back, and doing something visible with it.
-Decisions: transport, how much feedback (visualize detections live, or actually
-influence the vehicle), handling of network latency and dropped frames, and the
-frame-rate budget I can genuinely hit. This is also where the measurement study
-gets its real telemetry: staged timestamps for capture, encode, upload, inference
-start and end, download, and consumption.
-
-</details>
-
-<details>
-<summary>Phase 6: MLOps polish</summary>
-
-Monitoring (latency, throughput, confidence drift, error rates) on a CloudWatch
-dashboard, infrastructure as code in Python CDK or Terraform, CI that runs tests
-and deploys on push, and automated teardown so the project does not quietly bleed
-money. The pitfall is over-engineering, so this phase is scoped to the parts that
-actually demonstrate production maturity.
-
-</details>
-
-<details>
-<summary>Phase 7: Demo, docs, and the story</summary>
-
-A 60 to 90 second hero clip, an architecture diagram, the metrics, a design
-decisions and tradeoffs note, and a README that tells the whole story. A great
-project made invisible by a weak README is the failure mode here.
-
-</details>
-
 ## Phase 1 in depth
 
 Phase 1 is done, and it is where most of the engineering judgement lives so far.
 Each decision below is expandable.
 
-<details open>
+<details>
 <summary>Splitting the pipeline so the GPU is only up when it must be</summary>
 
 CARLA is an Unreal Engine renderer. Even headless, the cameras and LiDAR are
 GPU-rendered, so there is no running it on a laptop without an NVIDIA GPU. I do
 not have one, so CARLA runs on an **EC2 g4dn.xlarge spot instance** (T4, 16 GB) in
-us-east-1, at roughly 0.15 to 0.20 USD per hour instead of 0.53 on demand.
+AWS us-east-1, at roughly 0.15 to 0.20 USD per hour instead of 0.53 on demand.
 
 That makes GPU time the scarce resource, so the pipeline is split by what
 genuinely needs a GPU:
@@ -517,6 +430,93 @@ needed to reach both the simulator and the credential endpoint were each a small
 problem, and together they were most of a working week. Writing a relaunch runbook
 with the gotchas recorded turned that into a two minute startup instead of a
 rediscovery every session.
+
+</details>
+
+<details>
+<summary>Phase 2: Build and validate the model locally (In progress)</summary>
+
+Objective: a working detector on my own data before touching cloud training.
+Open decisions: which model family, justified on accuracy versus latency versus
+memory; transfer learning versus training from scratch; camera-only for v1, with
+camera plus LiDAR fusion held back as the stronger but costlier story. Metrics
+are mAP for detection, MAE in meters for lead distance, and MOTA and IDF1 for
+tracking. Done when the model beats a defined baseline on the held-out map and I
+can render qualitative overlays. The pitfall is chasing state-of-the-art accuracy
+instead of a clean, reproducible pipeline, so the baseline gets defined before
+training starts.
+
+</details>
+
+<details>
+<summary>Phase 3: Move training to the cloud, reproducibly</summary>
+
+Objective: training that runs on AWS with tracked artifacts and versioned data.
+Decisions: managed training versus raw EC2 GPU with my own scripts, convenience
+against control; experiment tracking with MLflow or Weights and Biases; a
+containerized training job; spot versus on-demand as a cost decision. Done when a
+single command trains on AWS and lands a versioned model artifact in S3 with a
+registry entry.
+
+</details>
+
+<details>
+<summary>Phase 4: Serve the model as a real inference service</summary>
+
+Objective: an endpoint that takes a frame and returns structured perception
+results inside a latency budget defined up front. Decisions: SageMaker real-time
+endpoint versus a container on ECS or Fargate versus Lambda for a light model,
+weighed on latency, cost, and cold start; synchronous or async; ONNX conversion
+and quantization with a *measured* latency improvement rather than a claimed one;
+the API contract; autoscaling.
+
+</details>
+
+<details>
+<summary>Phase 4b: The edge variant</summary>
+
+Objective: deploy the *same* ONNX-optimized model to a constrained second target,
+the Raspberry Pi I already own from the Path Following Robot build, and benchmark
+it head to head against the cloud endpoint on an identical test set. The output is
+one comparison of latency, throughput, memory footprint, and accuracy for one
+model on two targets, plus the crossover point: at what network latency does edge
+beat cloud. Timeboxed hard, because this is the stretch goal most likely to turn
+into its own project.
+
+</details>
+
+<details>
+<summary>Phase 5: Close the loop</summary>
+
+Objective: CARLA and AWS talking in real time, with the simulator streaming
+frames out, getting perception back, and doing something visible with it.
+Decisions: transport, how much feedback (visualize detections live, or actually
+influence the vehicle), handling of network latency and dropped frames, and the
+frame-rate budget I can genuinely hit. This is also where the measurement study
+gets its real telemetry: staged timestamps for capture, encode, upload, inference
+start and end, download, and consumption.
+
+</details>
+
+<details>
+<summary>Phase 6: MLOps polish</summary>
+
+Monitoring (latency, throughput, confidence drift, error rates) on a CloudWatch
+dashboard, infrastructure as code in Python CDK or Terraform, CI that runs tests
+and deploys on push, and automated teardown so the project does not quietly bleed
+money. The pitfall is over-engineering, so this phase is scoped to the parts that
+actually demonstrate production maturity.
+
+</details>
+
+<details>
+<summary>Phase 7: Demo, docs, and the story</summary>
+
+A 60 to 90 second hero clip, an architecture diagram, the metrics, a design
+decisions and tradeoffs note, and a README that tells the whole story. A great
+project made invisible by a weak README is the failure mode here.
+
+</details>
 
 ## Keeping it honest
 
