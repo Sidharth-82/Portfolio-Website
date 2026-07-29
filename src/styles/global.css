@@ -106,4 +106,45 @@ html.dark {
   .rich-text :where(video) {
     @apply my-4 w-full rounded-xl border border-border bg-black;
   }
+
+  /* ── Collapsible sections ──────────────────────────────────────────────
+     Written in markdown as raw HTML:
+
+       <details>
+       <summary>Section title</summary>
+       (blank line REQUIRED here, else the body is treated as raw HTML)
+       ...markdown body...
+       (blank line REQUIRED here too)
+       </details>
+
+     Add `open` (<details open>) to expand one by default. Horizontal padding
+     lives on the <details> so the body inherits it; the <summary> cancels it
+     with -mx-4 to stay full-bleed. Padding the children directly instead would
+     fight the `pl-5` on ul/ol above (same specificity, later rule wins) and
+     clip the list markers. */
+  .rich-text :where(details) {
+    @apply my-2 rounded-xl border border-border bg-surface-2/40 px-4 transition-colors;
+  }
+  .rich-text :where(details[open]) {
+    @apply border-accent/30;
+  }
+  .rich-text :where(summary) {
+    @apply -mx-4 cursor-pointer list-none px-4 py-3 font-semibold text-content transition hover:text-accent;
+  }
+  /* Safari draws its own triangle; `list-none` above handles Chrome/Firefox. */
+  .rich-text :where(summary)::-webkit-details-marker {
+    display: none;
+  }
+  .rich-text :where(summary)::before {
+    content: '›';
+    @apply mr-2 inline-block text-accent;
+    transition: transform 0.2s ease;
+  }
+  /* `summary` sits outside :where() so this outranks the rule above. */
+  .rich-text :where(details[open]) > summary::before {
+    transform: rotate(90deg);
+  }
+  .rich-text :where(details) > *:last-child {
+    @apply mb-4;
+  }
 }

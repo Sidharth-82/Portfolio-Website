@@ -3,7 +3,7 @@ title: Cloud-Native AV Perception Stack (CARLA + AWS)
 summary: A highway perception stack split across an onboard real-time tier and an AWS near-real-time tier, built to measure whether delayed cloud perception is still safe to act on.
 image: /videos/projects/carla-demo.mp4
 # github: https://github.com/Sidharth-82/your-carla-repo
-tags: [Python, CARLA, AWS, Docker, Computer Vision, PyTorch, ONNX, MLOps]
+tags: [Python, CARLA, AWS, Docker, Computer Vision, PyTorch, Data Pipelines, ONNX, MLOps]
 featured: true
 spotlight: true
 status: Phase 2 of 7
@@ -11,19 +11,33 @@ order: 0
 ---
 
 <!--
+COLLAPSIBLE SECTIONS: the <details>/<summary> blocks below are raw HTML passed
+straight through by `marked`. Two blank lines are load-bearing:
+
+  <details>
+  <summary>Title</summary>
+                        <- REQUIRED blank line, else the body renders as raw HTML
+  markdown body
+                        <- REQUIRED blank line
+  </details>
+
+Add `open` (`<details open>`) to expand one by default. Styling lives in
+src/styles/global.css under ".rich-text :where(details)".
+
 MEDIA TODO: `image:` still points at /videos/projects/carla-demo.mp4, which does
 not exist yet. Until the clip lands in public/videos/projects/ the tile shows an
 empty black box. Best candidates for the hero clip, in order:
   1. A drive with tracked vehicle boxes + lead distance + detected speed limit
      overlaid live (this is the Phase 5 money shot).
   2. Phase 1 sanity-viz: projected 3D boxes rendered onto captured frames.
-Extra media inside the write-up: `![alt](/images/projects/carla-*.png)` for
-images (click to zoom), raw `<video src="/videos/projects/*.mp4" controls
-playsinline></video>` for clips. Paths are root-relative to /public.
+Note the site plays this muted + looping, and the grid tile resets to t=0 on
+mouse-leave, so front-load the payoff and keep it 16:9 (object-cover crops).
 
-TAGS: "CARLA", "AWS", "ONNX" and "MLOps" have no matching skill yet, so those
-chips are not clickable. Add "CARLA" to the `aliases` of
-src/content/skills/15-simulation.md to link that chip there.
+TAGS: "CARLA" now resolves via the `aliases` of skills/15-simulation.md, and
+"AWS" and "Data Pipelines" have their own skills (21-aws.md, 22-data-pipelines.md).
+"ONNX" and "MLOps" are deliberately still unmatched — they are Phases 3-6 work,
+so there is nothing to back a skill page yet. Those two chips render as plain,
+non-clickable text until then.
 
 NUMBERS: every figure in "Phase 1 by the numbers" is the configured target from
 the scene matrix. Replace with the observed values recorded in
@@ -94,7 +108,8 @@ The project runs as seven phases, each with an explicit definition of done. I
 write the phase document first, argue with it, lock the decisions, then write
 code against it. The phase documents are the design record.
 
-### Phase 0: frame the problem, lock the narrative. Complete.
+<details>
+<summary>Phase 0: Frame the problem, lock the narrative (Complete)</summary>
 
 Objective: decide the exact perception task and the story before writing a line
 of code. The pitfall here is picking a scope so broad you can never call it
@@ -111,13 +126,19 @@ finished, so this phase ends in hard locks:
   met, plus, per cloud output, a logged p50 and p95 end-to-end age and a
   quantified delay-induced error against relative speed.
 
-### Phase 1: stand up the simulator and generate the dataset. Complete.
+</details>
+
+<details open>
+<summary>Phase 1: Stand up the simulator and generate the dataset (Complete)</summary>
 
 Objective: a reproducible pipeline that turns N scenario configs into a stored,
 labeled dataset with a data card describing it. This is the phase that is
 finished, and the section below covers it properly.
 
-### Phase 2: build and validate the model locally. In progress.
+</details>
+
+<details>
+<summary>Phase 2: Build and validate the model locally (In progress)</summary>
 
 Objective: a working detector on my own data before touching cloud training.
 Open decisions: which model family, justified on accuracy versus latency versus
@@ -129,14 +150,22 @@ can render qualitative overlays. The pitfall is chasing state-of-the-art accurac
 instead of a clean, reproducible pipeline, so the baseline gets defined before
 training starts.
 
-### Phase 3: move training to the cloud, reproducibly.
+</details>
+
+<details>
+<summary>Phase 3: Move training to the cloud, reproducibly</summary>
 
 Objective: training that runs on AWS with tracked artifacts and versioned data.
 Decisions: managed training versus raw EC2 GPU with my own scripts, convenience
 against control; experiment tracking with MLflow or Weights and Biases; a
-containerized training job; spot versus on-demand as a cost decision.
+containerized training job; spot versus on-demand as a cost decision. Done when a
+single command trains on AWS and lands a versioned model artifact in S3 with a
+registry entry.
 
-### Phase 4: serve the model as a real inference service.
+</details>
+
+<details>
+<summary>Phase 4: Serve the model as a real inference service</summary>
 
 Objective: an endpoint that takes a frame and returns structured perception
 results inside a latency budget defined up front. Decisions: SageMaker real-time
@@ -145,7 +174,10 @@ weighed on latency, cost, and cold start; synchronous or async; ONNX conversion
 and quantization with a *measured* latency improvement rather than a claimed one;
 the API contract; autoscaling.
 
-### Phase 4b: the edge variant.
+</details>
+
+<details>
+<summary>Phase 4b: The edge variant</summary>
 
 Objective: deploy the *same* ONNX-optimized model to a constrained second target,
 the Raspberry Pi I already own from the Path Following Robot build, and benchmark
@@ -155,7 +187,10 @@ model on two targets, plus the crossover point: at what network latency does edg
 beat cloud. Timeboxed hard, because this is the stretch goal most likely to turn
 into its own project.
 
-### Phase 5: close the loop.
+</details>
+
+<details>
+<summary>Phase 5: Close the loop</summary>
 
 Objective: CARLA and AWS talking in real time, with the simulator streaming
 frames out, getting perception back, and doing something visible with it.
@@ -165,7 +200,10 @@ frame-rate budget I can genuinely hit. This is also where the measurement study
 gets its real telemetry: staged timestamps for capture, encode, upload, inference
 start and end, download, and consumption.
 
-### Phase 6: MLOps polish.
+</details>
+
+<details>
+<summary>Phase 6: MLOps polish</summary>
 
 Monitoring (latency, throughput, confidence drift, error rates) on a CloudWatch
 dashboard, infrastructure as code in Python CDK or Terraform, CI that runs tests
@@ -173,17 +211,24 @@ and deploys on push, and automated teardown so the project does not quietly blee
 money. The pitfall is over-engineering, so this phase is scoped to the parts that
 actually demonstrate production maturity.
 
-### Phase 7: demo, docs, and the story.
+</details>
+
+<details>
+<summary>Phase 7: Demo, docs, and the story</summary>
 
 A 60 to 90 second hero clip, an architecture diagram, the metrics, a design
 decisions and tradeoffs note, and a README that tells the whole story. A great
 project made invisible by a weak README is the failure mode here.
 
+</details>
+
 ## Phase 1 in depth
 
 Phase 1 is done, and it is where most of the engineering judgement lives so far.
+Each decision below is expandable.
 
-### Splitting the pipeline so the GPU is only up when it must be
+<details open>
+<summary>Splitting the pipeline so the GPU is only up when it must be</summary>
 
 CARLA is an Unreal Engine renderer. Even headless, the cameras and LiDAR are
 GPU-rendered, so there is no running it on a laptop without an NVIDIA GPU. I do
@@ -203,7 +248,10 @@ genuinely needs a GPU:
 Slower in wall-clock terms, dramatically cheaper, and it means every offline
 decision is re-runnable without ever going back to the GPU.
 
-### Raw capture, filtered later
+</details>
+
+<details>
+<summary>Raw capture, filtered later</summary>
 
 The capture-side records are deliberately **unfiltered**. Every actor CARLA
 reports gets written, including ones that are occluded or outside the frustum,
@@ -219,7 +267,10 @@ posted speed value) and a `coarse` preset collapses all vehicles into one. If th
 per-class histogram shows motorcycles starved on a highway, flipping the preset
 and re-running the writer costs nothing. Record fine-grained, decide coarse later.
 
-### The scenario matrix and the split that actually tests generalization
+</details>
+
+<details>
+<summary>The scenario matrix and the split that actually tests generalization</summary>
 
 Twelve scenes, 300 seconds each, sampled at **2 Hz** from a 20 Hz simulation.
 Sampling every tick would be pointless: at highway speed, consecutive 20 Hz frames
@@ -238,7 +289,10 @@ Splits are assigned at the **scene level, never the frame level**:
 Testing on an unseen map is the strongest answer I have to the Phase 1 pitfall of
 a dataset so uniform that the model looks great and generalizes to nothing.
 
-### Determinism as a hard requirement
+</details>
+
+<details>
+<summary>Determinism as a hard requirement</summary>
 
 - **Synchronous mode with a fixed 0.05 s timestep**, ticking the world manually.
   Asynchronous mode gives misaligned sensor frames and non-reproducible runs, so
@@ -254,7 +308,10 @@ a dataset so uniform that the model looks great and generalizes to nothing.
   class they could never reach their instance target. A class that can never be
   satisfied is worse than no class at all.
 
-### The sensor rig
+</details>
+
+<details>
+<summary>The sensor rig</summary>
 
 A front-focused rig, `front_v1`, designed so five more cameras can be added later
 without a schema change:
@@ -277,7 +334,10 @@ The ego vehicle is a fixed Tesla Model 3 across every single scene. Swapping the
 ego between runs would change camera height and mounting geometry, which shifts
 the entire data distribution. That is a confound, not useful diversity.
 
-### The encodings that quietly destroy a dataset
+</details>
+
+<details>
+<summary>The encodings that quietly destroy a dataset</summary>
 
 CARLA's depth and instance-segmentation cameras do not emit literal images. They
 pack data into RGB channels, and reading them as ordinary images gives garbage:
@@ -302,7 +362,10 @@ landmarks, and stock towns commonly only define 30, 60, and 90. Enumerating the
 landmarks per town before locking the matrix was the difference between a designed
 class list and a discovered one.
 
-### Configuration as a contract
+</details>
+
+<details>
+<summary>Configuration as a contract</summary>
 
 Everything that parametrizes a run lives in four JSON files with strictly
 separated concerns: **how the sim runs** (server settings, world conventions,
@@ -332,7 +395,10 @@ because a CARLA actor ID is only unique *within an episode*, every actor also
 carries a `global_actor_id` namespaced by scene. That last one becomes load
 bearing the moment tracking exists.
 
-### Streaming the dataset back out
+</details>
+
+<details>
+<summary>Streaming the dataset back out</summary>
 
 The offline half never downloads the dataset. A generator streams one run's frames
 straight out of S3: one GET pulls a scene's records file, then a bounded thread
@@ -347,7 +413,10 @@ is another GET per frame. Frames are yielded in submission order, which makes th
 sanity visualization deterministic even though the filter itself does not depend
 on ordering.
 
-### Surviving spot interruptions
+</details>
+
+<details>
+<summary>Surviving spot interruptions</summary>
 
 Spot capacity reclaims are uncommon but real, and the honest analysis is that
 **disk choice is not the protection**. Both the NVMe instance store and the
@@ -359,7 +428,10 @@ of that, the instance metadata endpoint is polled for the interruption notice, a
 the roughly two minute warning is used to flush the current partial scene before
 the box disappears.
 
-### The infrastructure work nobody sees
+</details>
+
+<details>
+<summary>The infrastructure work nobody sees</summary>
 
 Getting CARLA to run reliably on EC2 took more debugging than the capture code:
 
@@ -386,7 +458,10 @@ a five-frames-per-scene subset run proves the S3 layout end to end, then the
 writer and reader contract is checked by streaming that subset back and decoding
 it, and only then does the full run start.
 
-### Provenance and the data card
+</details>
+
+<details>
+<summary>Provenance and the data card</summary>
 
 Every run stamps a provenance block: git commit, a SHA256 of each config file as
 it existed at generation time, the CARLA version the server actually reported
@@ -400,6 +475,8 @@ instance counts **per split** rather than in total (a class that is healthy
 overall but absent from test tells you nothing on test), the split key table, the
 sensor spec, a reproducibility block with the exact regenerate command, and the
 sim-to-real disclaimer.
+
+</details>
 
 ## Phase 1 by the numbers
 
