@@ -5,6 +5,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Footer from '../components/astro/Footer.astro';
 import HomeHub from '../components/react/HomeHub.tsx';
 import ProjectGrid from '../components/react/ProjectGrid.tsx';
+import SpotlightProject from '../components/react/SpotlightProject.tsx';
 import SkillsExplorer from '../components/react/SkillsExplorer.tsx';
 import SlideDots from '../components/react/SlideDots.tsx';
 import type { Portal } from '../components/react/HomeHub.tsx';
@@ -19,16 +20,23 @@ const goals = await getEntry('goals', 'future-goals');
 const aboutHtml = renderMarkdown(about!.body);
 const goalsHtml = renderMarkdown(goals!.body);
 
-// Featured projects only, surfaced on the Home page.
-const featured: ProjectData[] = (await getCollection('projects'))
-  .filter((p) => p.data.featured)
+const allProjects: ProjectData[] = (await getCollection('projects'))
   .sort((a, b) => a.data.order - b.data.order)
   // Strip the numeric ordering prefix so deep-link slugs match across pages:
   // `01-uwb-tracking` -> `uwb-tracking` (keeps `/projects/#<slug>` links working).
   .map((p) => ({ slug: p.slug.replace(/^\d+-/, ''), ...p.data, html: renderMarkdown(p.body) }));
 
+// The in-progress project gets its own slide, right after Future Goals.
+const spotlight = allProjects.find((p) => p.spotlight) ?? null;
+
+// Featured projects fill the "Featured Projects" slide (the spotlight has its own).
+const featured = allProjects.filter((p) => p.featured && p !== spotlight);
+
+// Skills make the tags inside the spotlight's popup clickable.
+const skills = await loadSkills();
+
 // Featured skills, surfaced on the Home "Featured Skills" slide.
-const featuredSkills = (await loadSkills()).filter((s) => s.featured);
+const featuredSkills = skills.filter((s) => s.featured);
 
 // The captivating, animated navigation into each section.
 const portals: Portal[] = [
@@ -55,11 +63,13 @@ const portals: Portal[] = [
   },
 ];
 
-// Slides for the dot navigator (order matches the sections below).
+// Slides for the dot navigator (order matches the sections below). The
+// spotlight slide only exists when a project sets `spotlight: true`.
 const slides: Slide[] = [
   { id: 'hero', label: 'Intro' },
   { id: 'about', label: 'About' },
   { id: 'goals', label: 'Goals' },
+  ...(spotlight ? [{ id: 'spotlight', label: 'In Progress' }] : []),
   { id: 'featured', label: 'Projects' },
   { id: 'skills', label: 'Skills' },
   { id: 'explore', label: 'Explore' },
@@ -175,7 +185,32 @@ const slides: Slide[] = [
       </div>
     </section>
 
-    <!-- ═══════════ Slide 4 — Featured Projects ═══════════ -->
+    <!-- ═══════════ Slide 4 — In-progress project (spotlight) ═══════════ -->
+    {
+      spotlight && (
+        <section
+          id="spotlight"
+          class="flex min-h-screen snap-start flex-col items-center justify-center px-4 py-20"
+        >
+          <div class="mx-auto flex min-h-[70vh] w-full max-w-screen-xl flex-col justify-center">
+            <div class="mb-8 flex items-end justify-between gap-4">
+              <h2 class="text-3xl font-bold sm:text-4xl">
+                Currently <span class="text-accent">Building</span>
+              </h2>
+              <a
+                href={withBase('/projects')}
+                class="text-sm font-medium text-accent hover:brightness-110"
+              >
+                All projects →
+              </a>
+            </div>
+            <SpotlightProject client:load project={spotlight} skills={skills} />
+          </div>
+        </section>
+      )
+    }
+
+    <!-- ═══════════ Slide 5 — Featured Projects ═══════════ -->
     <section
       id="featured"
       class="flex min-h-screen snap-start flex-col items-center justify-center px-4 py-20"
@@ -193,7 +228,7 @@ const slides: Slide[] = [
       </div>
     </section>
 
-    <!-- ═══════════ Slide 5 — Featured Skills ═══════════ -->
+    <!-- ═══════════ Slide 6 — Featured Skills ═══════════ -->
     <section
       id="skills"
       class="flex min-h-screen snap-start flex-col items-center justify-center px-4 py-20"
@@ -211,7 +246,7 @@ const slides: Slide[] = [
       </div>
     </section>
 
-    <!-- ═══════════ Slide 6 — Explore (navigation) + footer ═══════════ -->
+    <!-- ═══════════ Slide 7 — Explore (navigation) + footer ═══════════ -->
     <section id="explore" class="flex min-h-screen snap-start flex-col px-4">
       <div class="flex flex-1 flex-col items-center justify-center py-20">
         <div class="mx-auto flex min-h-[70vh] w-full max-w-screen-2xl flex-col justify-center">

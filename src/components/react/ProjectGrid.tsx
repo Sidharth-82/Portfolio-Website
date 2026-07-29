@@ -1,24 +1,21 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import Modal from './Modal';
-import Lightbox from './Lightbox';
-import SkillModal from './SkillModal';
+import ProjectModal, { isVideo, StatusBadge } from './ProjectModal';
+import type { ProjectData } from './ProjectModal';
 import type { SkillData } from './SkillModal';
 import { withBase } from '../../config/site';
 
-export interface ProjectData {
-  slug: string;
-  title: string;
-  summary: string;
-  image: string;
-  github?: string;
-  tags: string[];
-  /** detailed description, pre-rendered to HTML at build time */
-  html: string;
-}
+// Re-exported so existing `import type { ProjectData } from './ProjectGrid'`
+// call sites keep working; the type now lives with the popup that renders it.
+export type { ProjectData } from './ProjectModal';
 
 interface Props {
   projects: ProjectData[];
+  /**
+   * The in-progress project, rendered as a full-width banner above the grid.
+   * Keep it OUT of `projects` so it doesn't also appear as an ordinary tile.
+   */
+  spotlight?: ProjectData | null;
   /** When true, the grid stretches to fill its parent's height (standalone page). */
   fill?: boolean;
   /**
@@ -28,43 +25,21 @@ interface Props {
   skills?: SkillData[];
 }
 
-/** A project's `image` may also point to a video file — detect it by extension. */
-const VIDEO_RE = /\.(mp4|webm|ogg|ogv|mov|m4v)$/i;
-const isVideo = (src: string) => VIDEO_RE.test(src.split(/[?#]/)[0]);
-
 /**
  * Modular project tiles. Each tile opens a popup with the full description and
  * an optional GitHub link. Add a project by adding a markdown file — no code
  * change needed.
  */
-export default function ProjectGrid({ projects, fill = false, skills = [] }: Props) {
+export default function ProjectGrid({
+  projects,
+  spotlight = null,
+  fill = false,
+  skills = [],
+}: Props) {
   const [active, setActive] = useState<ProjectData | null>(null);
-  // Fullscreen image viewer (hero image + any image in the description).
-  const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
-  // Skill popup opened by clicking a tag in a project's description.
-  const [activeSkill, setActiveSkill] = useState<SkillData | null>(null);
 
-  // Lowercased tag/alias -> skill, so a project tag can open its skill popup.
-  const tagSkill = useMemo(() => {
-    const map = new Map<string, SkillData>();
-    for (const s of skills) {
-      for (const key of [s.name, ...s.aliases]) {
-        const k = key.toLowerCase();
-        if (!map.has(k)) map.set(k, s);
-      }
-    }
-    return map;
-  }, [skills]);
-
-  // Open the lightbox when a description image is clicked (the HTML is injected
-  // via dangerouslySetInnerHTML, so we delegate from the container).
-  const onRichTextClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLElement;
-    if (target.tagName === 'IMG') {
-      const img = target as HTMLImageElement;
-      setZoom({ src: img.currentSrc || img.src, alt: img.alt });
-    }
-  };
+  // Every project the popup can deep-link to, spotlight included.
+  const all = spotlight ? [spotlight, ...projects] : projects;
 
   // Deep-linking: a link to `/projects#<slug>` (e.g. from a roadmap popup)
   // opens that project's popup directly. We re-check on initial load, after
@@ -72,9 +47,9 @@ export default function ProjectGrid({ projects, fill = false, skills = [] }: Pro
   const openFromHash = useCallback(() => {
     const slug = decodeURIComponent(window.location.hash.replace(/^#/, ''));
     if (!slug) return;
-    const match = projects.find((p) => p.slug === slug);
+    const match = all.find((p) => p.slug === slug);
     if (match) setActive(match);
-  }, [projects]);
+  }, [projects, spotlight]);
 
   useEffect(() => {
     openFromHash();
@@ -101,13 +76,10 @@ export default function ProjectGrid({ projects, fill = false, skills = [] }: Pro
   };
 
   // A project mini-tile inside a skill popup was clicked: swap to that project's
-  // popup in place (we're already on the projects page) and close the skill one.
+  // popup in place (we're already on the projects page).
   const openProjectBySlug = (slug: string) => {
-    const match = projects.find((p) => p.slug === slug);
-    if (match) {
-      setActiveSkill(null);
-      open(match);
-    }
+    const match = all.find((p) => p.slug === slug);
+    if (match) open(match);
   };
 
   return (
@@ -118,6 +90,36 @@ export default function ProjectGrid({ projects, fill = false, skills = [] }: Pro
           fill ? 'min-h-0 flex-1' : '',
         ].join(' ')}
       >
+        {/* In-progress project: one row tall, spanning every column. */}
+        {spotlight && (
+          <motion.button
+            key={spotlight.slug}
+            onClick={() => open(spotlight)}
+            className="card group col-span-full flex min-h-[15rem] flex-col overflow-hidden text-left hover:border-accent hover:shadow-glow sm:flex-row"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.35 }}
+            whileHover={{ y: -4 }}
+          >
+            <div className="relative aspect-[16/9] shrink-0 overflow-hidden sm:aspect-auto sm:w-2/5 lg:w-1/2">
+              <SpotlightMedia project={spotlight} />
+            </div>
+            <div className="flex flex-1 flex-col justify-center gap-3 p-6 sm:p-8">
+              {spotlight.status && <StatusBadge status={spotlight.status} />}
+              <h3 className="text-2xl font-bold sm:text-3xl">{spotlight.title}</h3>
+              <p className="max-w-2xl text-muted">{spotlight.summary}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {spotlight.tags.map((t) => (
+                  <span key={t} className="chip">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </motion.button>
+        )}
+
         {projects.map((p, i) => (
           <motion.button
             key={p.slug}
@@ -169,79 +171,39 @@ export default function ProjectGrid({ projects, fill = false, skills = [] }: Pro
         ))}
       </div>
 
-      <Modal open={!!active} onClose={close} label={active?.title}>
-        {active && (
-          <article>
-            {isVideo(active.image) ? (
-              <video
-                src={withBase(active.image)}
-                controls
-                playsInline
-                className="mb-5 aspect-video w-full rounded-xl border border-border bg-black"
-              />
-            ) : (
-              <button
-                type="button"
-                onClick={() => setZoom({ src: withBase(active.image), alt: active.title })}
-                aria-label="View image fullscreen"
-                className="group relative mb-5 block aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-xl"
-              >
-                <img
-                  src={withBase(active.image)}
-                  alt={active.title}
-                  className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
-                />
-              </button>
-            )}
-            <h2 className="text-2xl font-bold">{active.title}</h2>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {active.tags.map((t) => {
-                const skill = tagSkill.get(t.toLowerCase());
-                return skill ? (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setActiveSkill(skill)}
-                    title={`View ${skill.name} skill`}
-                    className="chip cursor-pointer border-accent/40 text-accent transition hover:border-accent hover:bg-accent hover:text-white"
-                  >
-                    {t}
-                  </button>
-                ) : (
-                  <span key={t} className="chip">
-                    {t}
-                  </span>
-                );
-              })}
-            </div>
-            <div
-              className="rich-text mt-4"
-              onClick={onRichTextClick}
-              dangerouslySetInnerHTML={{ __html: active.html }}
-            />
-            {active.github?.trim() && (
-              <a
-                href={active.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-accent mt-6"
-              >
-                View on GitHub
-                <span aria-hidden>↗</span>
-              </a>
-            )}
-          </article>
-        )}
-      </Modal>
-
-      {/* Skill popup opened by clicking a tag; layered above the project modal. */}
-      <SkillModal
-        skill={activeSkill}
-        onClose={() => setActiveSkill(null)}
+      <ProjectModal
+        project={active}
+        onClose={close}
+        skills={skills}
         onOpenProject={openProjectBySlug}
       />
-
-      <Lightbox src={zoom?.src ?? null} alt={zoom?.alt} onClose={() => setZoom(null)} />
     </>
+  );
+}
+
+/** Banner media: video autoplays on hover (like the tiles), image just scales. */
+function SpotlightMedia({ project }: { project: ProjectData }) {
+  return isVideo(project.image) ? (
+    <video
+      src={withBase(project.image)}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-label={project.title}
+      onMouseEnter={(e) => void e.currentTarget.play().catch(() => {})}
+      onMouseLeave={(e) => {
+        e.currentTarget.pause();
+        e.currentTarget.currentTime = 0;
+      }}
+      className="h-full w-full bg-black object-cover transition duration-500 group-hover:scale-105"
+    />
+  ) : (
+    <img
+      src={withBase(project.image)}
+      alt={project.title}
+      loading="lazy"
+      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+    />
   );
 }

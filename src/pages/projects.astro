@@ -6,12 +6,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectGrid from '../components/react/ProjectGrid.tsx';
 import type { ProjectData } from '../components/react/ProjectGrid.tsx';
 
-const projects: ProjectData[] = (await getCollection('projects'))
+const all: ProjectData[] = (await getCollection('projects'))
   .sort((a, b) => a.data.order - b.data.order)
   // Strip the numeric ordering prefix so the deep-link slug is stable and
   // human-readable: `01-uwb-tracking` -> `uwb-tracking` (matches `/projects/#<slug>`
   // links from the roadmap, same convention as roadmap.astro).
   .map((p) => ({ slug: p.slug.replace(/^\d+-/, ''), ...p.data, html: renderMarkdown(p.body) }));
+
+// The in-progress project headlines the page as a full-width banner; the rest
+// fill the normal grid below it.
+const spotlight = all.find((p) => p.spotlight) ?? null;
+const projects = all.filter((p) => p !== spotlight);
 
 // Skills power the clickable tags in each project popup (open the skill popup).
 const skills = await loadSkills();
@@ -27,6 +32,6 @@ const skills = await loadSkills();
         Click any tile for a detailed write-up and a link to the source.
       </p>
     </header>
-    <ProjectGrid client:load projects={projects} skills={skills} fill />
+    <ProjectGrid client:load projects={projects} spotlight={spotlight} skills={skills} fill />
   </section>
 </BaseLayout>

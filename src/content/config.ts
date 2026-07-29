@@ -15,6 +15,12 @@ const projects = defineCollection({
     github: z.string().url().optional(), // hyperlink shown in the popup
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false), // surface on the Home page
+    // The single in-progress "hero" project: renders as a full-width banner
+    // above the grid on /projects, and gets its own Home slide after Future
+    // Goals. Only one project should set this — if several do, the lowest
+    // `order` wins and the rest fall back to ordinary tiles.
+    spotlight: z.boolean().default(false),
+    status: z.string().optional(), // spotlight badge text, e.g. "In Progress"
     order: z.number().default(99), // lower = earlier
   }),
 });
