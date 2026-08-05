@@ -1,6 +1,6 @@
 ---
 name: TypeScript
-level: Intermediate
+level: Beginner
 category: Languages
 icon: "🟦"
 featured: false
