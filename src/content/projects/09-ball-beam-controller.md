@@ -5,7 +5,7 @@ image: /images/projects/ball-beam.png
 github: https://github.com/Sidharth-82/MTE484-BallBeamBalancer
 tags: [MATLAB, Simulink, Control Systems, System Identification]
 featured: false
-order: 8
+order: 9
 ---
 
 <!--

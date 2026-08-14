@@ -5,7 +5,7 @@ image: /videos/projects/Snake_video.mp4
 github: https://github.com/Sidharth-82/PyTorch-Projects/blob/main/SnakeGame/DESCRIPTION.md
 tags: [Python, PyTorch, Deep Q-Networks, Reinforcement Learning]
 featured: true
-order: 5
+order: 6
 ---
 
 <!--

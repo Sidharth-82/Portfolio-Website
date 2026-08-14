@@ -4,7 +4,7 @@ summary: A C++ control system with odometry tracking and PID loops for precise a
 image: /images/projects/vex-tracking-wheels.jpg
 tags: [C++, Odometry, PID, Kinematics]
 featured: true
-order: 6
+order: 7
 ---
 
 <!--

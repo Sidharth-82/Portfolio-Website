@@ -4,8 +4,8 @@ summary: A from-scratch PyTorch reimplementation of Llama 3.1-8B — RMSNorm, Ro
 image: /images/projects/llama-implementation.svg
 github: https://github.com/Sidharth-82/PyTorch-Projects/blob/main/Llama%20Implementation/DESCRIPTION.md
 tags: [Python, PyTorch, Llama 3, Transformers, RoPE, GQA]
-featured: true
-order: 4
+featured: false
+order: 5
 ---
 
 <!--

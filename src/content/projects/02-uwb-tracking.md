@@ -5,7 +5,7 @@ image: /images/projects/uwb-tracking.svg
 # github: https://github.com/Location-Tracking-FYDP
 tags: [C++, TypeScript, PCBA, UWB, React, ThreeJS, PostgreSQL, Docker]
 featured: true
-order: 1
+order: 2
 ---
 
 <!--
@@ -37,8 +37,7 @@ separation.
 ## Highlights
 
 - Designed and fabricated custom anchor PCBs integrating the **DW3110 UWB chip and
-  ESP32 microcontroller**,
-  with controlled-impedance RF traces for accurate high-frequency signaling.
+  ESP32 microcontroller**, with controlled-impedance RF traces for accurate high-frequency signaling.
 - Implemented a **Time Difference of Arrival (TDoA)** localization pipeline using
   a **Weighted Least Squares + Firefly Optimization** algorithm for sub-meter
   accuracy with minimal communication and battery use.

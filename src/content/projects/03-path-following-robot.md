@@ -5,7 +5,7 @@ image: /videos/projects/MTE380-Robot.mp4
 github: https://github.com/VictorKaraboychev/mobile-robot-vision-rp5
 tags: [Python, Raspberry Pi, OpenCV, YOLOv8, Pure Pursuit, PID]
 featured: true
-order: 2
+order: 3
 ---
 
 <!--

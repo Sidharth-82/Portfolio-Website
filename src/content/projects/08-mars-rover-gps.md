@@ -5,7 +5,7 @@ image: /images/projects/gps-nav-flowchart.png
 github: https://github.com/Sidharth-82/UWRobotics_MarsRover
 tags: [C++, Python, ROS2, Nav2, GPS, EKF, Docker]
 featured: false
-order: 7
+order: 8
 ---
 
 <!--
