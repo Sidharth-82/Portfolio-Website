@@ -55,7 +55,7 @@ optimiser, no mode switching, and no handoff logic.
 At one link it works: **3,823 of a 4,000 reward ceiling**, upright in **0.31 s**,
 held to **0.03°**, learned in **60 training iterations** on a CPU.
 
-Everything is hand-written — the dynamics, the LQR baseline, and PPO itself. No RL
+Everything is custom — the dynamics, the LQR baseline, and PPO itself. No RL
 framework, no physics engine in the loop.
 
 ## The question this project answers
@@ -368,7 +368,7 @@ Separate actor and critic trunks — a shared trunk saves parameters but couples
 policy and value gradients, and at this size the parameters are free and the
 coupling is not. The rollout buffer is kept separate from the update on purpose: it
 is all bookkeeping with an exactly checkable answer, and it is where the subtle
-bugs live. Generalised advantage estimation on a hand-built three-step episode can
+bugs live. Generalised advantage estimation on a custom three-step episode can
 be verified with a calculator; a wrong advantage inside a training loop just looks
 like "PPO does not learn."
 
@@ -444,8 +444,7 @@ now lives in **one JSON file**, behind a loader that:
   deep in a rollout, or as a training run that behaves nothing like the config
   appears to describe.
 
-The MuJoCo model is *generated* from that same file for the same reason. A
-hand-written model carrying its own copy of the link masses would put the second
+The MuJoCo model is *generated* from that same file for the same reason. A model carrying its own copy of the link masses would put the second
 source of truth straight back.
 
 </details>
@@ -463,13 +462,13 @@ Two distinct jobs, deliberately kept apart:
   the command, and the loop closes.
 
 The second is a genuine transfer test. The policy trained entirely against the
-hand-written plant and had never seen MuJoCo; it swings up and balances anyway,
+ plant and had never seen MuJoCo; it swings up and balances anyway,
 settling in **0.40 s** against 0.31 s in training. A second engine, a slightly
 different answer, which is the honest result.
 
 The network is exported as **plain-text weights** rather than TorchScript. The
 actor is three linear layers and two activations, so reimplementing that forward
-pass in NumPy is five lines — versus an afternoon making a hand-written module
+pass in NumPy is five lines — versus an afternoon making a module
 loadable from Python for the same result. That decision also previews how the Pi
 will run it.
 
