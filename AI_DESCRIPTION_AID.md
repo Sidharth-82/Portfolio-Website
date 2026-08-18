@@ -52,7 +52,7 @@ Home page deliberately hides it in favor of the portal cards.
 | Styling | **Tailwind CSS v3** (`darkMode: 'class'`) | Fast iteration; theme via CSS variables. |
 | Animation | **framer-motion** | Page-portal, timeline zoom, modal, tab-pill animations. |
 | Markdown → HTML | **marked**, run at **build time** in `.astro` frontmatter | Detailed descriptions render to HTML strings passed to React; no client-side markdown lib shipped. |
-| Backend | **None** | Résumé is a static `public/resume.pdf`; everything else is static. |
+| Backend | **None** | Résumé is a build-hashed asset (`src/assets/resume.pdf`); everything else is static. |
 | Page transitions | Astro **View Transitions** (`<ViewTransitions />`) | Smooth animated tab navigation with real, shareable URLs. |
 
 ---
@@ -65,7 +65,6 @@ portfolio/
 ├─ tailwind.config.mjs       # colors mapped to CSS variables (see global.css)
 ├─ tsconfig.json             # strict + react-jsx
 ├─ public/
-│  ├─ resume.pdf             # ← static résumé download (replace this)
 │  ├─ favicon.svg
 │  └─ images/
 │     ├─ projects/*.svg      # placeholder tile images
@@ -176,8 +175,11 @@ and toggled by `ThemeToggle.tsx`; default follows the visitor's OS setting.
 - **New roadmap era** → add an object to `eras` in `src/config/roadmap.ts` and
   create the matching `src/content/roadmap/<collectionDir>/` folder.
 - **Identity / links / tab order** → `src/config/site.ts`.
-- **Résumé** → replace `public/resume.pdf` (keep the filename, or update
-  `resumePath` in `site.ts`).
+- **Résumé** → overwrite `src/assets/resume.pdf`. It is imported with Vite's
+  `?url` in `site.ts`, so the build emits `/_astro/resume.<contenthash>.pdf`.
+  The hash changes with the bytes, which is what defeats the 4-hour
+  `Cache-Control` GitHub Pages puts on static files. Do **not** move it back
+  to `public/` — a fixed URL there serves a stale PDF for hours after deploy.
 
 See `README.md` for the user-facing version of these instructions.
 
@@ -215,7 +217,7 @@ notes are in `astro.config.mjs`).
   are anchors with `TODO` comments — confirm/replace with the real reading list.
 - About me & Future Goals prose are **author-written** (not lorem).
 - Project tile images are still generated **labeled SVG placeholders**
-  (`public/images/projects/*.svg`); `resume.pdf` is still a **placeholder PDF**.
+  (`public/images/projects/*.svg`).
 - **Skills** (`src/content/skills/*.md`) are a **SCAFFOLD**: 19 curated skills
   drawn from the real project tags, grouped into 4 categories, with best-guess
   `level`s and **placeholder courses** (each field marked `TODO`). Replace the

@@ -27,7 +27,7 @@ npm run preview  # preview the production build
 | Add a roadmap **era**            | Add an entry in `src/config/roadmap.ts` + a matching folder (see below). |
 | Change your **name / links**     | Edit `src/config/site.ts`.                                               |
 | Change **accent colors / theme** | Edit the CSS variables at the top of `src/styles/global.css`.            |
-| Replace the **résumé**           | Drop your PDF at `public/resume.pdf` (keep the filename).               |
+| Replace the **résumé**           | Overwrite `src/assets/resume.pdf` (keep the filename). Do **not** put it in `public/`. |
 | Replace a project **image**      | Drop a file in `public/images/projects/` and point `image:` at it.      |
 
 ### Project frontmatter

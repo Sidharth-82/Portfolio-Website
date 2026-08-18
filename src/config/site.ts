@@ -3,6 +3,13 @@
  * Edit this file to change your name, links, resume path, or the tab order.
  */
 
+// Vite emits this as `/_astro/resume.<contenthash>.pdf`, so the URL changes
+// whenever the PDF's bytes change. GitHub Pages serves static files with a
+// 4-hour `Cache-Control` and gives us no way to override it, so a fixed
+// `/resume.pdf` URL kept serving a stale copy long after deploy. A hashed
+// URL can't go stale. Keep the PDF in `src/assets/`, not `public/`.
+import resumeUrl from '../assets/resume.pdf?url';
+
 export interface NavTab {
   href: string;
   label: string;
@@ -23,8 +30,8 @@ export const site = {
   role: 'Aspiring AI Systems Engineer',
   tagline: 'I build software that understands the world around me',
   email: 'sidharthsreeram@gmail.com',
-  /** Static file served from /public. Drop your real resume at public/resume.pdf */
-  resumePath: withBase('/resume.pdf'),
+  /** Content-hashed at build time — replace `src/assets/resume.pdf` to update. */
+  resumePath: resumeUrl,
   /** Portrait shown in the Home "About me" slide. Replace this file. */
   portrait: withBase('/images/about/photo.jpeg'),
   socials: {

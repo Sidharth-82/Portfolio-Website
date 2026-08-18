@@ -39,17 +39,18 @@ TAGS: "CARLA" now resolves via the `aliases` of skills/15-simulation.md, and
 so there is nothing to back a skill page yet. Those two chips render as plain,
 non-clickable text until then.
 
-NUMBERS: every figure in "Phase 1 by the numbers" is the configured target from
-the scene matrix. Replace with the observed values recorded in
-metadata.json -> runs[].results / compute once the full run is logged.
+NUMBERS: "Phase 1 by the numbers" now carries OBSERVED values from the completed
+run (dataset version v3), not configured targets. Source of truth is
+Phase 1/config/metadata.json -> runs[].class_histogram and the published
+class_histogram.md. Update both together if the dataset is regenerated.
 -->
 
 **Cloud-Native AV Perception Stack** is the project I am building full time right
 now. A simulated sedan drives a highway in **CARLA**, and the perception that
 interprets what it sees is deliberately split across two tiers: lane geometry
-runs onboard under a real-time (**<100 ms**) requirement, while vehicle detection, tracking,
-lead-vehicle distance estimation, and speed-limit sign reading run in the cloud
-on **AWS** under a near real-time (**<5 second**) budget.
+runs onboard under a real-time (**<100 ms**) requirement, while vehicle detection,
+tracking, and lead-vehicle distance estimation run in the cloud on **AWS** under a
+near real-time (**<5 second**) budget.
 
 The interesting part is not the models. It is the question the split forces you
 to answer.
@@ -69,8 +70,6 @@ measure its end-to-end age and the error that age introduces:
 - **Lead-vehicle distance:** the absolute difference between the distance
   reported from frame *t* and the ground-truth distance at the moment the answer
   is actually consumed, tracked against relative velocity.
-- **Speed-limit signs:** a valid or stale boolean. Is the returned sign still the
-  applicable one at consume time, or has the car already passed it?
 - **Vehicle tracks:** IoU and box-center drift of a stale box against the current
   ground-truth box, plus track ID consistency.
 
@@ -116,9 +115,9 @@ of code. The pitfall here is picking a scope so broad you can never call it
 finished, so this phase ends in hard locks:
 
 - **Setting:** highway only. **Ego:** a sedan, fixed across every run.
-- **Hero outputs:** vehicle detection with tracking and lead-vehicle distance,
-  plus speed-limit sign detection with value classification. Lane geometry is the
-  onboard real-time counterpart.
+- **Hero outputs:** vehicle detection with tracking and lead-vehicle distance.
+  Lane geometry is the onboard real-time counterpart. Speed-limit sign reading was
+  scoped in here and later dropped on evidence — see the Phase 1 section.
 - **Scope fence:** perception ends after those outputs. Driving behaviour and
   control are explicitly deferred to Phase 5, which kills the most likely source
   of scope creep before it starts.
@@ -153,10 +152,17 @@ genuinely needs a GPU:
 
 - **On the GPU box:** drive the scenarios and dump *raw* output. Camera images,
   LiDAR points, every actor bounding box and transform, sensor calibration, ego
-  pose, and the weather, map, and time tags. Then stream it to S3 and terminate.
-- **Offline, on CPU, for free:** project boxes into 2D and 3D, run the occlusion
-  and in-frustum filter, attach sign labels, package to KITTI, assign splits, and
-  write the data card.
+  pose, and the weather, map, and time tags.
+- **Offline, on CPU:** project boxes into 2D and 3D, run the occlusion and
+  in-frustum filter, package to KITTI, assign splits, and write the data card.
+
+Raw never leaves the instance. Both halves run on the same box in separate
+containers, so raw is written to the instance store and read from local disk;
+publishing it would mean roughly 200,000 S3 PUTs for data the next stage reads
+locally anyway. Only the finished, versioned dataset is uploaded. The tradeoff is
+explicit rather than accidental: re-tuning a filter threshold is free while the
+instance is alive and costs a re-capture afterwards, so the sample renders get
+checked before the box is released.
 
 Slower in wall-clock terms, dramatically cheaper, and it means every offline
 decision is re-runnable without ever going back to the GPU.
@@ -174,18 +180,18 @@ costs GPU hours to regenerate would be an expensive mistake to undo.
 
 The same principle drives the class map. Each object records its `blueprint_id`,
 `base_type`, and `listed_speed_kph`, and the dataset class name is applied by the
-KITTI writer, not at capture time. That makes the class list a **config knob**: a
-`fine` preset gives seven classes (car, truck, van, motorcycle, and a class per
-posted speed value) and a `coarse` preset collapses all vehicles into one. If the
-per-class histogram shows motorcycles starved on a highway, flipping the preset
-and re-running the writer costs nothing. Record fine-grained, decide coarse later.
+KITTI writer, not at capture time. That makes the class list a **config knob**, and
+it paid for itself: when the evidence said speed-limit signs could not reach a
+trainable count, dropping them from the label set cost one config edit and an
+offline re-run, with no re-capture, because the signs are still sitting in the raw
+records. Record fine-grained, decide coarse later.
 
 </details>
 
 <details>
 <summary>The scenario matrix and the split that actually tests generalization</summary>
 
-Twelve scenes, 300 seconds each, sampled at **2 Hz** from a 20 Hz simulation.
+Fourteen scenes, 300 seconds each, sampled at **2 Hz** from a 20 Hz simulation.
 Sampling every tick would be pointless: at highway speed, consecutive 20 Hz frames
 are near-duplicates that inflate the frame count without adding information, and
 they leak information across splits.
@@ -201,6 +207,13 @@ Splits are assigned at the **scene level, never the frame level**:
 
 Testing on an unseen map is the strongest answer I have to the Phase 1 pitfall of
 a dataset so uniform that the model looks great and generalizes to nothing.
+
+The split is recorded twice on purpose, once per scene and once on the capture run
+that produced it, and the processor refuses to start if the two disagree. "No scene
+spans two splits" is the claim that makes the test number mean anything, so it is
+enforced rather than trusted. Validation carries four scenes rather than two
+because the first full histogram showed it holding too few instances of the rarer
+vehicle classes to measure them — a healthy total hiding an unmeasurable split.
 
 </details>
 
@@ -232,11 +245,11 @@ without a schema change:
 - **`cam_front`**: RGB, 1280x720, 90 degree FOV, mounted 1.5 m forward and 1.6 m
   up. Intrinsics are **derived** from width, height, and FOV rather than stored
   alongside them, because storing both invites drift.
-- **`cam_front_instance_seg`**: co-located with the RGB camera so per-actor ID
-  pixels line up with projected boxes. This drives the vehicle visibility filter.
-- **`cam_front_depth`**: also co-located. Signs are static map objects with no
-  actor instance ID, so instance segmentation cannot filter them. Their occlusion
-  check compares projected distance against the depth buffer instead.
+- **`cam_front_instance_seg`**: co-located with the RGB camera, giving a semantic
+  tag per pixel plus an opaque separator between two same-class vehicles whose
+  boxes overlap.
+- **`cam_front_depth`**: also co-located, and **the occlusion oracle**. A pixel
+  blocks an object if it is rendered nearer than that object's box.
 - **`lidar_top`**: 64 channels, 100 m range, 1.3 M points per second, rotation
   frequency pinned to 20 Hz so exactly one full sweep completes per tick. A
   mismatch there gives partial or duplicated sweeps.
@@ -260,20 +273,34 @@ pack data into RGB channels, and reading them as ordinary images gives garbage:
 - **Instance segmentation** puts the semantic tag in R and a 16-bit instance ID
   across G and B.
 
-Two consequences drove real decisions. First, both buffers **must** be saved as
-lossless PNG with no color converter applied. JPEG's lossy compression would
-corrupt the packed channel values and silently break both decodes, and CARLA's
-depth converters are visualization helpers that throw away precision. Second, the
-byte order and the ID mapping were treated as **unverified until checked
-empirically**: spawn one vehicle at a known position with a known actor ID,
-capture a frame, read the pixels inside its projected box, and confirm the decode
-matches. A ten minute check that prevents a silently empty visibility filter.
+First, both buffers **must** be saved as lossless PNG with no color converter
+applied. JPEG's lossy compression would corrupt the packed channel values and
+silently break both decodes, and CARLA's depth converters are visualization
+helpers that throw away precision.
 
-The same skepticism applied to the sign values. The plan called for 90 to 110 kph
-sign variety, but CARLA speed-limit signs come from each map's OpenDRIVE
-landmarks, and stock towns commonly only define 30, 60, and 90. Enumerating the
-landmarks per town before locking the matrix was the difference between a designed
-class list and a discovered one.
+Second, and this is the one that changed the design: every one of these
+conventions was treated as **unverified until measured against real captures**,
+and one of them did not hold. The documented reading is that the instance ID maps
+to the CARLA actor ID. It does not. Vehicle pixels decode to IDs in the tens of
+thousands under *both* byte orders while the actual actor IDs in those frames were
+in the low hundreds — it is an engine-side ID with no route back to the Python
+actor. That would have produced a silently empty visibility filter, and a dataset
+where the labels look plausible and the occlusion reasoning is fiction.
+
+So the filter was redesigned around depth instead, which answers the question that
+actually matters: is anything rendered nearer than this box. Two more conventions
+were pinned the same way, by making the sensors check each other. Projecting the
+LiDAR sweep into the camera and comparing against the depth buffer gives a ratio of
+**1.0000** for planar depth against 0.88 for radial, which settles the encoding and
+confirms the intrinsics at once; the same comparison settles the LiDAR handedness
+at 91-96 percent point agreement unflipped against 37-52 percent flipped. And
+`rotation_y` was checked against each vehicle's recorded velocity: over 71 moving
+vehicles, the heading implied by the written label agreed with the direction of
+travel to a mean of **0.31 degrees**, with none flipped by 180.
+
+None of those is visible in a label file. A wrong convention produces a
+perfectly well-formed dataset, which is exactly why they get measured rather than
+assumed.
 
 </details>
 
@@ -302,23 +329,30 @@ Two rules make this work:
   camera frame, and that conversion is only correct because both sides are stated
   explicitly.
 
-Naming follows the same discipline. Frame IDs are zero-padded so lexicographic
-sort equals numeric sort, `(scene_id, carla_frame)` is the real primary key, and
-because a CARLA actor ID is only unique *within an episode*, every actor also
-carries a `global_actor_id` namespaced by scene. That last one becomes load
-bearing the moment tracking exists.
+Naming follows the same discipline. `(scene_id, carla_frame)` is the real primary
+key and it is also the filename: frames are written as `002_231559.png` rather than
+KITTI's sequential `000000.png`. The convention buys tooling compatibility, but it
+makes every filename opaque — nothing on disk says which scene or which simulation
+tick a frame came from, so any inspection has to join through an index first.
+Traceability won, since the loader that consumes this is mine anyway.
+
+Because a CARLA actor ID is only unique *within an episode*, every actor also
+carries a `global_actor_id` namespaced by scene. That one became load bearing
+sooner than expected: it is the ground-truth track ID, and the dataset ships it
+alongside the labels.
 
 </details>
 
 <details>
 <summary>Streaming the dataset back out</summary>
 
-The offline half never downloads the dataset. A generator streams one run's frames
-straight out of S3: one GET pulls a scene's records file, then a bounded thread
-pool prefetches sensor buffers so network I/O overlaps the caller's per-frame CPU
-work. Buffers are decoded inside the stream, so raw bytes never surface to the
-caller, and nothing is written to local disk. Memory stays flat because only a
-fixed number of frames are ever in flight.
+The offline half never materializes the dataset. A generator streams one run's
+frames behind a single interface with two sources, local disk or S3: one read pulls
+a scene's records file, then a bounded thread pool prefetches sensor buffers so I/O
+overlaps the caller's per-frame CPU work. Buffers are decoded inside the stream, so
+raw bytes never surface to the caller. Memory stays flat because only a fixed
+number of frames are ever in flight, which is what lets the same code run against
+a local scratch directory or an archived run in the bucket without caring which.
 
 The buffer list is selective. The visibility filter only needs the depth and
 instance-segmentation buffers, so RGB and LiDAR are opt-in, and every extra buffer
@@ -333,13 +367,16 @@ on ordering.
 
 Spot capacity reclaims are uncommon but real, and the honest analysis is that
 **disk choice is not the protection**. Both the NVMe instance store and the
-delete-on-termination EBS root die with the instance. The protection is **S3 flush
-cadence**. Scratch stays on the fast free NVMe, each scene flushes to its own S3
-prefix as it completes, and re-running a scene overwrites its prefix while
-already-complete scenes are skipped, so a run is idempotent and resumable. On top
-of that, the instance metadata endpoint is polled for the interruption notice, and
-the roughly two minute warning is used to flush the current partial scene before
-the box disappears.
+delete-on-termination EBS root die with the instance.
+
+What protects the work is granularity and what gets published. Capture runs one
+process per run, so a reclaim costs the run in flight rather than the set, and
+completed runs stay on disk for the processing pass. The instance metadata endpoint
+is polled for the interruption notice so the two minute warning finishes the current
+scene. And the thing that must survive — the processed dataset — is published to a
+**versioned** S3 prefix, so a republish cannot overwrite the data a model was
+actually trained on. Raw is disposable by design, and that is a stated tradeoff
+rather than an oversight.
 
 </details>
 
@@ -393,15 +430,45 @@ sim-to-real disclaimer.
 
 ## Phase 1 by the numbers
 
-- **12 scenes**, 300 seconds each, three maps, day and night, three traffic
+- **14 scenes**, 300 seconds each, three maps, day and night, three traffic
   density presets.
-- **~7,200 frames** at 2 Hz, split 4,800 train, 1,200 validation, 1,200 test.
-- **Four synchronized sensor buffers per frame** plus a full label record, at
-  roughly 11 MB per frame.
+- **8,400 frames** at 2 Hz, split 4,800 train, 2,400 validation, 1,200 test.
+- **14,396 labelled objects.** Against a target of 500 to 1500 instances per
+  class, every class clears it and appears in every split: `car` 9,691,
+  `truck` 2,805, `van` 1,034, `motorcycle` 866.
+- **Four synchronized sensor buffers per frame** plus a full label record.
 - **Single-digit dollars** of spot GPU time for the capture run.
-- An instance target of **500 to 1500 per class**, with the histogram deciding
-  whether targeted top-up scenes are needed. Signs are the expected bottleneck,
-  because you drive a long way between them.
+
+The histogram is not just a report. It scores volume and per-split coverage
+**independently**, because a class can clear its total and still be unmeasurable —
+a split holding seven instances yields an average precision that is noise, not a
+measurement. That check is what caught validation being too thin on motorcycles
+and vans, and two extra validation scenes moved those from 7 and 49 instances to
+271 and 145.
+
+<details>
+<summary>What the dataset carries that KITTI does not</summary>
+
+The label files are standard KITTI, but the format has nowhere to put three things
+this project depends on, so they ride alongside in a per-frame index:
+
+- **`ego_pose`** — position, rotation and velocity per frame. The whole delay study
+  rests on scoring a stale answer against what was true when it was *consumed*,
+  which is impossible unless the ego trajectory is recoverable. Raw capture is
+  discarded with the instance, so if this were not published it would be gone.
+- **`track_ids`** — ground-truth identity, aligned row for row with the label file.
+  KITTI's detection format has no identity column, and its sixteenth field
+  conventionally means confidence, so an ID written there would be silently read as
+  a score by anything expecting predictions.
+- **`timestamp_sim_s`** — simulation time rather than wall clock, so the timeline is
+  exact and reproducible.
+
+None of these matter for training a detector. All of them matter for the
+measurement the project exists to make, and every one of them is cheap now and
+expensive later: they come from raw records that live only as long as the capture
+instance.
+
+</details>
 
 ## What I am learning
 
@@ -415,9 +482,24 @@ until you are the one paying for the instance.
 
 **Sim data is only "free labels" until you look closely.** CARLA hands you perfect
 ground truth for every actor in the world, including the ones behind a truck and
-the ones behind the camera. Turning that into honest labels needs a real occlusion
-and frustum filter, and it needs two different mechanisms, because vehicles are
-actors with instance IDs while signs are map objects that are not actors at all.
+the ones behind the camera. A scene reports around 120 vehicles per frame and
+roughly six survive into the labels. Turning perfect knowledge into honest labels
+is most of the work, and the filter that does it has to be measured rather than
+reasoned about — the version I designed first was built on a documented
+relationship that turned out not to exist.
+
+**Ceilings are worth measuring before you spend against them.** Speed-limit signs
+were a scoped output until I surveyed what the maps actually contain: 59 signs in
+one town, 18 in another, none in a third, and one posted value represented by two
+signs in the entire map. Instances scale with route density, duration, visibility
+range and capture rate, and ego speed cancels out entirely — driving slower holds
+each sign in frame longer but passes proportionally fewer. The arithmetic put the
+ceiling well under a trainable count, and put it lowest on the held-out map, which
+is the split where a missing class does the most damage. That is a property of the
+maps rather than of the pipeline, so it was settled by reading the road graph
+rather than by spending GPU hours against it, and the class was dropped on the
+evidence. The signs are still in the raw
+records, so the decision is reversible for the cost of a re-run.
 
 **Writing the design document first genuinely changes the code.** The capture-side
 and offline-side pieces were specified as one contract before either was written,
