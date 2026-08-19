@@ -1,5 +1,5 @@
 ---
-label: August
+label: September
 sublabel: "2026"
 order: 2
 ---

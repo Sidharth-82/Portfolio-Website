@@ -1,5 +1,5 @@
 ---
-label: January
+label: February
 sublabel: "2027"
 order: 7
 ---
@@ -12,6 +12,6 @@ with a learned camera→BEV transform.
   grid, then segment (road / lane / vehicle) directly in BEV. *Paper:*
   Lift-Splat-Shoot (Philion & Fidler) — read this one closely. *Dataset:*
   nuScenes-mini (it has the multi-camera rig you need).
-- **Ablation:** compare directly against September's classical IPM output on the
+- **Ablation:** compare directly against October's classical IPM output on the
   same scene — that side-by-side makes a great portfolio figure and shows *why*
   learned BEV wins (height info, non-planar roads, dynamic objects).

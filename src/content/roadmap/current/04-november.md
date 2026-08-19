@@ -1,5 +1,5 @@
 ---
-label: October
+label: November
 sublabel: "2026"
 order: 4
 ---
@@ -7,7 +7,7 @@ order: 4
 **Tier 1 · Foundations — tracking & lanes.** Add time and structured outputs, and
 close out the foundational primitives.
 
-- **2D multi-object tracking (tracking-by-detection):** feed July's detector into
+- **2D multi-object tracking (tracking-by-detection):** feed August's detector into
   SORT / DeepSORT — a **Kalman-filter motion model**, Hungarian matching, and
   ID-switch analysis. This first taste of motion and state estimation is what links
   perception to vehicle motion and control downstream. *Papers:* SORT (Bewley et
