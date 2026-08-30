@@ -52,8 +52,12 @@ rest, a neural network learns to throw the links over the top and hold them
 upright — swing-up and balance as **one continuous behaviour**, with no trajectory
 optimiser, no mode switching, and no handoff logic.
 
-At one link it works: **3,823 of a 4,000 reward ceiling**, upright in **0.31 s**,
-held to **0.03°**, learned in **60 training iterations** on a CPU.
+At one link it works: **3,824.9 of a 4,000 reward ceiling**, upright in **0.31 s**,
+held to **0.015°**, first solved at **120 training iterations** on a CPU.
+
+Those figures come from a single reproduction run with the committed config and a
+fixed seed, and are regenerated from its logs rather than transcribed — the full
+report is [in the repo](https://github.com/Sidharth-82/RL-Pendulum-Balance/blob/main/docs/training-report.md).
 
 Everything is custom — the dynamics, the LQR baseline, and PPO itself. No RL
 framework, no physics engine in the loop.
@@ -306,6 +310,11 @@ linearisation is automatically of the model the controller actually faces, RK4 a
 zero-order hold included. Weights come from Bryson's rule over hardware-derived
 tolerances, so a randomised actuator re-derives its own weights.
 
+The tilt figures below were measured on an **earlier, weaker plant** — a single uniform
+0.3 m rod on a 0.5 m rail with **5 m/s²** of cart acceleration — not the 30 m/s² drive the
+hardware section specifies. The recoverable tilt is `acceleration ÷ angle gain`, so the
+absolute numbers move with the envelope. What survives the change is the *shape*.
+
 Two findings, both measured, both against intuition:
 
 - **Acceleration headroom.** Pricing the step-loss boundary as merely "tolerable"
@@ -317,7 +326,8 @@ Two findings, both measured, both against intuition:
   against the angle gain. Settled at a basin of **3.32°** with zero steady-state
   error.
 
-And the number that shapes the whole roadmap — **the difficulty cliff**:
+And the number that shapes the whole roadmap — **the difficulty cliff**, same 5 m/s²
+plant:
 
 | links | recoverable tilt |
 |---|---|
@@ -325,8 +335,9 @@ And the number that shapes the whole roadmap — **the difficulty cliff**:
 | 2 | 1.46° |
 | 3 | 0.86° |
 
-Roughly halving per link. That is a cliff, not a gradient, and it is the central
-known risk in the project.
+Roughly **halving per link**. That ratio, not the absolute tilt, is the cliff — and it is
+the central known risk in the project. A stronger drive shifts the whole column up without
+flattening it.
 
 </details>
 
@@ -334,6 +345,24 @@ known risk in the project.
 <summary>Stage 3: The learning problem (Complete)</summary>
 
 Objective: an environment that is a genuine MDP, so PPO does what PPO is for.
+
+Stated in full, because the parts usually left implicit are the ones that decide
+whether PPO is the right tool: the **transition is deterministic** — a fixed number
+of RK4 steps under a zero-order hold, with no noise injected anywhere — so the *only*
+stochasticity in the whole problem is the initial state draw, currently a uniform
+±0.05 rad about hanging with zero velocity at centre rail. The **discount is 0.995 at
+the 100 Hz policy rate**, an effective horizon of 200 steps or 2 s, against an 8 s
+episode. Deterministic dynamics plus a near-degenerate start means this sits closer to
+a single trajectory optimisation than to a distribution of control problems, which is
+the honest reason a trained policy here is fragile.
+
+It is also Markov for a narrower reason than it looks. The observed cart position is
+the actuator's *dead-reckoned belief*, while termination is judged on the truth. Those
+agree only while no steps are lost — so the problem stays Markov **because losing steps
+ends the episode immediately**, and the agent is never asked to act on a stale belief.
+Switching that off, or switching the sensor model on, does not just make the task
+harder; it turns it into a POMDP, and a memoryless network has no reason to be optimal
+in one.
 
 - **Observation**, `2 + 3N` numbers: normalised cart position and velocity, then
   per link `sin θ`, `cos θ`, and normalised rate. **sin/cos rather than the angle**
@@ -387,8 +416,8 @@ Three things in here are easy to get wrong and expensive:
 
 ### What actually happened
 
-Solved at **iteration 60**, and it held near ceiling for **28 of 34 evaluations**.
-Three findings the design did not predict:
+Solved at **iteration 120**, and it held near ceiling for **30 of 100 evaluations**,
+from iteration 120 to 820. Three findings the design did not predict:
 
 **There is no energy pumping.** Textbook swing-up drives the cart back and forth to
 grow the amplitude over several passes, because the actuator is too weak to do it
@@ -397,26 +426,33 @@ link has a natural period near 0.8 s, so the cart whips the link over inside *ha
 a swing*. That is a property of the drive I specified, not of the policy — a weaker
 motor would have to pump, and this result would not transfer.
 
-**Getting upright and staying there quietly were learned hundreds of iterations
-apart.** Long after the score flattened, the policy was holding the link within a
-degree by reversing the command on **199 of 200 steps** — a limit cycle at the
-control rate, and exactly the behaviour that would chew through a real belt. It
-went away on its own, and the reason is the *smallest* term in the reward: the
-effort penalty is a hundred times smaller than the alignment term and irrelevant
-right up until every remaining candidate was already perfectly upright, at which
-point it was the only term left with anything to say.
+**A finding I could not reproduce, kept because that is the finding.** An earlier
+write-up of this project claimed that balancing and *quiet* balancing were learned
+hundreds of iterations apart — a limit cycle reversing the command on 199 of 200
+steps, eventually cleaned up by the effort penalty. Re-running it, that does not
+happen: the command-reversal rate never exceeds 5% at any evaluation, and mean
+effort in the hold is already 2e-6 at the first evaluation that solves the task.
+Upright and quiet arrive together. The original run had not been kept and its
+config no longer matched the repo, so there was nothing to check the claim
+against — which is the actual lesson, and why the run is now regenerable from one
+command.
 
-**It collapsed.** At iteration 635 a single update moved the policy five times
-further than its own trust region allowed, and episodes went from 800 steps to 10
-and never recovered. Exploration had decayed over the preceding 400 iterations,
-leaving a near-deterministic policy with no spread left to absorb a bad step.
+**It collapsed three times, and only the third stuck.** At iteration 580 episodes
+went from 800 steps to 10; it recovered. At 720 it happened again; it recovered
+again. At 840 it happened a third time and never came back — the remaining 1,160
+iterations produce nothing. The worst single update moved the policy more than
+eight times further than its own trust region allowed, and 50 of 2,000 updates hit
+the trust-region early stop. So collapse is not a freak event in this setup, it is
+a standing mode that the policy twice happened to survive.
 
-Two things worth carrying forward from that. **Evaluation gave no warning** — the
-greedy policy was still scoring at ceiling while the sampled rollouts it trained on
-were dying at half the clock, and a policy that only survives with the noise turned
-off is one bad step from not surviving at all. And the checkpoint was being written
-unconditionally on every evaluation, so **the collapse overwrote the policy that
-worked**. There is no undo for that; the trainer now saves only on a new best.
+Two things worth carrying forward. **Evaluation gives no warning** — with the noise
+off the policy scored 3,816 on a full-length episode while the sampled rollouts it
+was actually training on were dying at 445 steps, and that gap sat there visibly
+for hundreds of iterations before anything broke. And the checkpoint was originally
+written unconditionally on every evaluation, so **the collapse would have
+overwritten the policy that worked**. There is no undo for that; the trainer now
+saves only on a new best, which is the only reason the best policy survived a run
+that spent its last 58% dead.
 
 </details>
 
@@ -461,10 +497,30 @@ Two distinct jobs, deliberately kept apart:
   integrates, the network reads MuJoCo's own state each control step and chooses
   the command, and the loop closes.
 
-The second is a genuine transfer test. The policy trained entirely against the
- plant and had never seen MuJoCo; it swings up and balances anyway,
-settling in **0.40 s** against 0.31 s in training. A second engine, a slightly
-different answer, which is the honest result.
+The second is a genuine transfer test. The policy trained entirely against my own
+plant and had never seen MuJoCo; it swings up and balances anyway, settling in
+**0.31 s**. A second engine, the same answer.
+
+**And it has a blind spot I only found by filming the failure.** I rendered the
+*collapsed* policy — the one scoring −145 on 10-step episodes that never
+recovers — expecting a clip of the cart slamming into the rail. It swings up and
+balances cleanly for the full eight seconds.
+
+Both results are correct. In training that policy dies of **step loss**, and the
+logged trajectory says so unambiguously: cart velocity climbs −0.3 m/s every 10 ms,
+which is the acceleration limit held saturated, and the episode ends on the step
+that reaches **−3.0 m/s — the velocity ceiling**, where the modelled actuator's
+available force has drooped to *zero*. Ten steps, 0.1 s, exactly the episode length.
+
+The MuJoCo rollout reproduces the observation, the clamps and the decimation, but
+carries no force envelope, because MuJoCo has no such concept and I never added
+one. It still catches leaving the rail — a policy 140 iterations further into the
+collapse does fail there, at 1.06 s — but it cannot see step loss at all.
+
+That does not make the check worthless: it is still the only test independent of my
+own derivation, and it caught four planted errors. It means it validates the
+*equations*, not the *hardware envelope* — and the envelope is where sim-to-real
+lives. I would not have found this if I had only filmed the policies that worked.
 
 The network is exported as **plain-text weights** rather than TorchScript. The
 actor is three linear layers and two activations, so reimplementing that forward
@@ -477,7 +533,8 @@ will run it.
 <details>
 <summary>Stage 7: More links (Not started)</summary>
 
-The cliff from Stage 2 says N=2 has a basin around 1.46° and N=3 around 0.86°. Two
+The cliff from Stage 2 — measured at 5 m/s², so read it as a ratio rather than as a
+tilt — has the basin roughly halving per link. Two
 mitigations are identified but untested: a network emitting state-dependent gains,
 and the observation that with a feedforward trajectory the feedback only has to
 absorb tracking error rather than catch a fall — a much weaker requirement.
@@ -509,11 +566,12 @@ Every figure here is measured, not targeted.
 - **1 link solved**; the code generalises to **6**, and the LQR sweep has measured
   the basin at 2 and 3.
 - **500 Hz** plant, **100 Hz** policy, 8-second episodes.
-- **2.7 M policy steps** across 670 iterations, **CPU only**, no GPU anywhere in
+- **8.2 M policy steps** across 2,000 iterations, **CPU only**, no GPU anywhere in
   the project.
-- **3,823 of a 4,000** reward ceiling; upright in **0.31 s**; held to **0.03°**.
-- **10 test targets**, several hundred individual checks, run under `ctest`.
-- Energy matches an independent implementation to **6.2e-16**; free drift **5e-9**
+- **3,824.9 of a 4,000** reward ceiling; upright in **0.31 s**; held to **0.015°**;
+  **0.34 m** of a ±1 m rail used.
+- **10 test targets**, **9,435 individual checks**, run under `ctest`.
+- Energy matches an independent implementation to **6.2e-16**; free drift **5.1e-9**
   at three links; RK4 order confirmed at **14×**.
 - Cross-engine agreement converging at **15.4×** for a 16× finer step, with **4 of
   4** planted errors caught.
@@ -561,14 +619,22 @@ loudly.
   the design, not a measurement of anything physical.
 - **One link.** N=2 and N=3 are supported by the code and characterised by the LQR
   sweep, but nothing has been trained on them, and the basin roughly halves per
-  link.
+  link. That sweep ran on an earlier 5 m/s² plant and has not been repeated against
+  the 30 m/s² envelope the hardware section specifies.
 - **The policy trains on ideal sensing.** Quantisation, noise, latency and filtered
   rate estimation are all implemented and all currently switched off. That switch is
   the largest single gap between these numbers and hardware, and no claim here
   survives flipping it until it has been re-measured.
+- **The cross-engine check does not cover the actuator.** It validates the dynamics
+  against an independent engine, but models no force droop and no step loss — so it
+  will pass a policy that the hardware envelope rejects, and demonstrably does.
 - **The controller is fragile.** With exploration noise off it is perfect; with the
   noise it trained under, episodes were ending at half the clock. That gap is a real
-  transfer risk, not a training artifact.
+  transfer risk, not a training artifact — and it is what the three collapses came
+  out of.
+- **One seed, one run.** Every number here is from a single reproduction with a
+  fixed seed. Nothing has been averaged over seeds, so the collapse iterations in
+  particular should be read as "this happens" and not as "this happens at 840."
 - **The swing-up strategy depends on having a strong motor.** At about 3g the cart
   can throw the link over in half a swing. A weaker drive would need genuine energy
   pumping, and the learned behaviour would not degrade into it gracefully — it would
