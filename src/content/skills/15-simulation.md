@@ -20,7 +20,7 @@ courses:
 Modeling robots and worlds before touching hardware — URDF descriptions and
 Gazebo physics simulation.
 
-**CARLA**, for the [Cloud-Native AV Perception Stack](/projects/#carla), pushed
+**CARLA**, for the [Cloud-Native ADAS Perception Stack](/projects/#carla), pushed
 this further: synchronous mode with a fixed 0.05 s timestep and a manually
 ticked world, a seeded Traffic Manager also in sync mode, and sensor payloads
 matched to a frame by the integer `world.tick()` returns rather than by "most

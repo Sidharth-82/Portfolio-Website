@@ -18,7 +18,7 @@ Containerizing reproducible robotics and ML environments so a build behaves the
 same on my laptop, a robot, and a cloud instance.
 
 The sharpest example is the
-[Cloud-Native AV Perception Stack](/projects/#carla), where the CARLA simulator
+[Cloud-Native ADAS Perception Stack](/projects/#carla), where the CARLA simulator
 and its Python client run as **two containers on one EC2 host**. They have to:
 the vendor image ships Python 2.7 and 3.7 eggs against its own 3.6 interpreter
 and is missing a shared library the client needs, so the client runs separately

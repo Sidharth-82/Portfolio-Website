@@ -1,5 +1,5 @@
 ---
-title: UWB Tag & Anchor Tracking System
+title: UWB Tag & Anchor Tracking System (Capstone)
 summary: Capstone — an indoor positioning system that locates transmit-only wearable tags to roughly 30 cm in 3-D, using custom RF boards and a wireless clock-sync model that holds a mesh of anchors in sub-nanosecond agreement.
 image: /images/projects/uwb-tracking.svg
 github: https://github.com/Location-Tracking-FYDP

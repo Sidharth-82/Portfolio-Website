@@ -15,7 +15,7 @@ courses: []
 ---
 
 Turning raw capture into a dataset you can defend. Phase 1 of the
-[Cloud-Native AV Perception Stack](/projects/#carla) was mostly this:
+[Cloud-Native ADAS Perception Stack](/projects/#carla) was mostly this:
 
 - **Split the pipeline by what actually needs a GPU.** Capture dumps raw output
   and terminates the expensive instance; projection, occlusion filtering,

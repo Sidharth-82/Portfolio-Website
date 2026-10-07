@@ -1,9 +1,9 @@
 ---
-title: Cloud-Native AV Perception Stack
-summary: A highway perception stack split across an onboard real-time tier and an AWS near-real-time tier, built to measure whether delayed cloud perception is still safe to act on.
+title: Cloud-Native ADAS Perception Stack
+summary: A highway driving stack in CARLA, built to measure whether cloud-served perception can meet closed-loop highway driving, and exactly where it breaks.
 image: /images/projects/carla.png
 github: https://github.com/Sidharth-82/AWS-Cloud-Native-AV-Perception-Stack
-tags: [Python, CARLA, AWS, Docker, Computer Vision, PyTorch, Data Pipelines, ONNX, MLOps]
+tags: [Python, C++, ROS2, YOLOv11, CARLA, LiDAR, AWS, Docker, Computer Vision, PyTorch, Data Pipelines]
 featured: true
 spotlight: true
 status: In Progress
@@ -35,9 +35,11 @@ mouse-leave, so front-load the payoff and keep it 16:9 (object-cover crops).
 
 TAGS: "CARLA" now resolves via the `aliases` of skills/15-simulation.md, and
 "AWS" and "Data Pipelines" have their own skills (21-aws.md, 22-data-pipelines.md).
-"ONNX" and "MLOps" are deliberately still unmatched — they are Phases 3-6 work,
-so there is nothing to back a skill page yet. Those two chips render as plain,
-non-clickable text until then.
+"YOLOv11" and "LiDAR" have no skill page and render as plain chips.
+
+PLAN: phases 3+ follow the 2026-10-03 rescope in the project's Phase 0 thesis
+§11-12 (edge-first C++ closed loop, cloud arm postponed). Keep this page in step
+with the Robotics resume (V3.0): same title, same numbers.
 
 NUMBERS: "Phase 1 by the numbers" now carries OBSERVED values from the completed
 run (dataset version v3), not configured targets. Source of truth is
@@ -45,12 +47,10 @@ Phase 1/config/metadata.json -> runs[].class_histogram and the published
 class_histogram.md. Update both together if the dataset is regenerated.
 -->
 
-**Cloud-Native AV Perception Stack** is the project I am building full time right
-now. A simulated sedan drives a highway in **CARLA**, and the perception that
-interprets what it sees is deliberately split across two tiers: lane geometry
-runs onboard under a real-time (**<100 ms**) requirement, while vehicle detection,
-tracking, and lead-vehicle distance estimation run in the cloud on **AWS** under a
-near real-time (**<5 second**) budget.
+**Cloud-Native ADAS Perception Stack** is the project I am building full time
+right now. A simulated sedan drives a highway in **CARLA**, and the question is
+whether its perception can live in the cloud — on **AWS** — and still be fast
+enough to drive on, or where exactly that breaks.
 
 The interesting part is not the models. It is the question the split forces you
 to answer.
@@ -58,54 +58,51 @@ to answer.
 ## The question this project answers
 
 Real-time AI at the edge is expensive: you pay for GPU hardware in every vehicle.
-Cloud or distributed inference is far cheaper per unit of compute, but it buys
-that saving with latency and connectivity risk. Most portfolio projects pick a
-side and move on. This one refuses to.
+Cloud inference is far cheaper per unit of compute, but it buys that saving with
+latency and connectivity risk. **By the time a cloud answer comes back, the world
+has moved.** Most portfolio projects pick a side and move on. This one measures
+the trade.
 
-Instead it holds model strength fixed, runs the full-strength perception model in
-the cloud, and measures the thing that actually gates deployment: **by the time a
-cloud answer comes back, the world has moved.** So for every cloud output I
-measure its end-to-end age and the error that age introduces:
+You can't measure what latency costs a driving system without a driving system,
+so the build is sequenced:
 
-- **Lead-vehicle distance:** the absolute difference between the distance
-  reported from frame *t* and the ground-truth distance at the moment the answer
-  is actually consumed, tracked against relative velocity.
-- **Vehicle tracks:** IoU and box-center drift of a stale box against the current
-  ground-truth box, plus track ID consistency.
+1. **Edge first.** A closed-loop highway cruise controller — lane keeping plus
+   distance keeping — running entirely on an edge target, in **ROS 2 C++**. This is
+   the baseline the cloud is judged against.
+2. **Then cloud.** Move perception to AWS and measure what the added latency does
+   to the same closed-loop scenarios — collisions, lane departures, gap
+   violations — rather than arguing about it.
 
-Every logged point carries accuracy, age, delay-induced error, and cost, so the
-usability curve is plottable rather than argued. The deliverable is a defensible
-statement of **which perception outputs can honestly live in the cloud tier and
-which must stay onboard**, with a stated usability threshold and the percentage
-of frames each delayed output stays usable. Degrading the model for speed is a
-later decision that these results inform, not a shortcut taken up front.
+Every result is scored against a **ground-truth perception run**: the same
+scenarios driven with CARLA's perfect boxes. The difference in failures between
+ground truth and the real detector is the detector's cost, in the units a driving
+system is actually judged in.
 
-That measurement is only possible because of a decision made in Phase 1: the
-dataset carries a **fully timestamped ground-truth timeline**, so a stale output
-can be scored against what was true when it was *consumed*, not when it was
-*computed*.
+That comparison is only possible because of a decision made in Phase 1: the
+dataset and the simulator carry a **fully timestamped ground-truth timeline**, so
+any output can be scored against what was true when it was *consumed*, not when it
+was *computed*.
 
 ## System shape
 
-- **CARLA (Python client)** spawns the ego sedan plus traffic and streams a
-  synchronized sensor set: front RGB camera, instance-segmentation camera, depth
-  camera, 64-channel LiDAR, IMU and GNSS.
-- **Onboard tier** handles lane geometry locally, inside the real-time budget.
-- **Ingestion layer** carries frames up to AWS. Transport choice (direct HTTP
-  versus a streaming layer such as Kinesis or MQTT) is a Phase 5 decision.
-- **Cloud inference service** runs detect, then track, then lead-distance
-  estimation, and returns structured results.
-- **Results return to the simulator** for live overlay, and telemetry goes to a
-  monitoring dashboard measuring latency, throughput, and drift.
-- **Offline path, built first:** CARLA writes raw capture to S3, offline
-  processing turns it into a labeled KITTI-format dataset, cloud training
-  produces a versioned model artifact, and that artifact is what gets served.
+- **CARLA** spawns the ego sedan plus traffic and streams a synchronized sensor set:
+  front RGB camera, depth camera, 64-channel LiDAR, IMU and GNSS. It runs headless
+  on EC2 GPUs in its own container.
+- **Perception:** a **YOLOv11** vehicle detector on the camera, combined with LiDAR
+  into 3-D boxes, and an **EKF tracker** that turns per-frame detections into tracks.
+- **Lane detection** on the image, so boxes outside the relevant lanes are ignored.
+- **Planner and controller:** classic and deterministic — no neural network after
+  perception. Commands go back to CARLA over a ROS 2 topic.
+- **Edge target:** a **Jetson Orin Nano** runs the stack (not the simulator). Until
+  the hardware exists, edge is simulated on a comparable cloud instance.
+- **Offline path, built first:** CARLA writes raw capture to S3, offline processing
+  turns it into a labeled KITTI-format dataset, and that dataset trains the detector.
 
 ## Build phases
 
-The project runs as seven phases, each with an explicit definition of done. I
-write the phase document first, argue with it, lock the decisions, then write
-code against it. The phase documents are the design record.
+Each phase has an explicit definition of done. I write the phase document first,
+argue with it, lock the decisions, then write code against it. The phase
+documents are the design record.
 
 <details>
 <summary>Phase 0: Frame the problem, lock the narrative (Complete)</summary>
@@ -119,7 +116,7 @@ finished, so this phase ends in hard locks:
   Lane geometry is the onboard real-time counterpart. Speed-limit sign reading was
   scoped in here and later dropped on evidence — see the Phase 1 section.
 - **Scope fence:** perception ends after those outputs. Driving behaviour and
-  control are explicitly deferred to Phase 5, which kills the most likely source
+  control are explicitly deferred to a later phase, which kills the most likely source
   of scope creep before it starts.
 - **Definition of complete is quantitative**, not vibes: baseline accuracy targets
   met, plus, per cloud output, a logged p50 and p95 end-to-end age and a
@@ -516,87 +513,78 @@ rediscovery every session.
 </details>
 
 <details>
-<summary>Phase 2: Build and validate the model locally (In progress)</summary>
+<summary>Phase 2: Train the vehicle detector (Complete)</summary>
 
-Objective: a working detector on my own data before touching cloud training.
-Open decisions: which model family, justified on accuracy versus latency versus
-memory; transfer learning versus training from scratch; camera-only for v1, with
-camera plus LiDAR fusion held back as the stronger but costlier story. Metrics
-are mAP for detection, MAE in meters for lead distance, and MOTA and IDF1 for
-tracking. Done when the model beats a defined baseline on the held-out map and I
-can render qualitative overlays. The pitfall is chasing state-of-the-art accuracy
-instead of a clean, reproducible pipeline, so the baseline gets defined before
-training starts.
+**YOLOv11s, COCO-pretrained**, four classes (car, truck, van, motorcycle), trained
+on Town04/Town06 with Town05 held out entirely. The acceptance gate was set before
+training: **per-class recall above 0.85**, with latency optimised underneath that
+gate rather than traded against it.
 
-</details>
+**Run 1 (640 px)** cleared the gate on cars (0.97), trucks (0.96) and motorcycles
+(0.91). **Vans failed at 0.78**, and no confidence threshold could rescue them.
 
-<details>
-<summary>Phase 3: Move training to the cloud, reproducibly</summary>
+**Diagnosing the van miss instead of tuning around it.** The validation set held
+only **145 van labels from 13 distinct vehicles**, and most misses were far-range.
+That is a data-diversity problem, not a model problem. So I wrote a targeted
+capture — **387 new frames** selected for far and occluded vans and far
+motorcycles — and retrained at **960 px**:
 
-Objective: training that runs on AWS with tracked artifacts and versioned data.
-Decisions: managed training versus raw EC2 GPU with my own scripts, convenience
-against control; experiment tracking with MLflow or Weights and Biases; a
-containerized training job; spot versus on-demand as a cost decision. Done when a
-single command trains on AWS and lands a versioned model artifact in S3 with a
-registry entry.
+| | Run 1 (640) | Run 3 (960, + targeted data) |
+|---|---|---|
+| Van recall | 0.78 | **0.86** |
+| Motorcycle recall | 0.91 | **0.97** |
+| Macro mAP | 0.84 | **0.89** |
+| Truck recall | 0.96 | 0.92 (regressed) |
 
-</details>
+Same validation frames on both sides, so the comparison is fair.
 
-<details>
-<summary>Phase 4: Serve the model as a real inference service</summary>
+**Latency:** **8.9 ms p50 / 11.2 ms p99** per frame on an A10G, nearly flat across
+FP16 and input size. That says the model is **overhead-bound, not compute-bound**
+on a big GPU — and also that it says nothing yet about an Orin Nano, where compute
+dominates.
 
-Objective: an endpoint that takes a frame and returns structured perception
-results inside a latency budget defined up front. Decisions: SageMaker real-time
-endpoint versus a container on ECS or Fargate versus Lambda for a light model,
-weighed on latency, cost, and cold start; synchronous or async; ONNX conversion
-and quantization with a *measured* latency improvement rather than a claimed one;
-the API contract; autoscaling.
-
-</details>
-
-<details>
-<summary>Phase 4b: The edge variant</summary>
-
-Objective: deploy the *same* ONNX-optimized model to a constrained second target,
-the Raspberry Pi I already own from the Path Following Robot build, and benchmark
-it head to head against the cloud endpoint on an identical test set. The output is
-one comparison of latency, throughput, memory footprint, and accuracy for one
-model on two targets, plus the crossover point: at what network latency does edge
-beat cloud. Timeboxed hard, because this is the stretch goal most likely to turn
-into its own project.
+**Moving on with known weaknesses, deliberately.** Whether a detector is "good
+enough" is not a property of mAP; it is defined by what consumes it. So run 3 is
+the perception model, and the closed-loop comparison against ground truth
+(Phase 3) decides whether it needs more work. Carried forward: the truck
+regression, weaker recall at 60–80 m, and the van gate only being met at a very
+low confidence threshold.
 
 </details>
 
 <details>
-<summary>Phase 5: Close the loop</summary>
+<summary>Phase 3: Closed-loop highway cruise control, on the edge (In progress)</summary>
 
-Objective: CARLA and AWS talking in real time, with the simulator streaming
-frames out, getting perception back, and doing something visible with it.
-Decisions: transport, how much feedback (visualize detections live, or actually
-influence the vehicle), handling of network latency and dropped frames, and the
-frame-rate budget I can genuinely hit. This is also where the measurement study
-gets its real telemetry: staged timestamps for capture, encode, upload, inference
-start and end, download, and consumption.
+Lane keeping plus distance keeping, as a production smart-cruise system does, in
+**ROS 2 C++**: YOLO + LiDAR 3-D boxes, EKF tracking, lane detection, then a classic
+planner and controller. Edge target is a **Jetson Orin Nano**.
 
-</details>
-
-<details>
-<summary>Phase 6: MLOps polish</summary>
-
-Monitoring (latency, throughput, confidence drift, error rates) on a CloudWatch
-dashboard, infrastructure as code in Python CDK or Terraform, CI that runs tests
-and deploys on push, and automated teardown so the project does not quietly bleed
-money. The pitfall is over-engineering, so this phase is scoped to the parts that
-actually demonstrate production maturity.
+- **Operating domain v1:** clear weather, daytime, low to high traffic, all maps.
+- **Done:** more than **5 minutes of continuous driving with no failure**.
+- **Failure:** a collision, leaving the lane, not holding speed or gap, or
+  accelerating just because the lead vehicle did.
+- **Scored twice:** once with ground-truth boxes, once with YOLO. The difference
+  is the detector's cost.
 
 </details>
 
 <details>
-<summary>Phase 7: Demo, docs, and the story</summary>
+<summary>Phase 4: Make it cloud-native and find the limits (Planned)</summary>
 
-A 60 to 90 second hero clip, an architecture diagram, the metrics, a design
-decisions and tradeoffs note, and a README that tells the whole story. A great
-project made invisible by a weak README is the failure mode here.
+Move perception to AWS and run the same closed-loop scenarios. The latency budget
+can only be set once the whole system exists, so it is measured here rather than
+guessed up front. The expected outcome is finding *where* cloud perception stops
+being safe to drive on for a highway.
+
+</details>
+
+<details>
+<summary>Later: city driving, cloud-assisted (Planned)</summary>
+
+If the highway case shows cloud inference cannot keep up, the domain moves to city
+driving, where lower speeds widen the latency budget — using **Bench2Drive** for
+closed-loop scenarios (cut-ins, merges, emergency braking) and a cheap on-board
+signal that decides when a cloud call is actually needed.
 
 </details>
 

@@ -19,11 +19,12 @@ Ford and backend/API work at Tamaki — which shaped my path toward software and
 
 - *Fall 2024 — Platform Software Engineer, Ford Canada (Ottawa):* built an
   object-oriented Python CLI for the AUTOSAR State Management API in a
-  containerized Linux environment, and wrote C++ tests that raised line coverage
-  **45% → 94%** and condition coverage **50% → 85%**.
-- *Spring 2025 — Software Engineering Analyst, Tamaki Controls (Toronto):*
-  standardized a Java↔Python API response schema and engineered backend
-  data-processing emitting UTF-8 CSV/JSON byte streams for analytics/ML pipelines.
+  containerized Linux environment, automating 6-stage state transitions into one
+  command — adopted by **3 engineering teams** — and wrote C++ test suites with
+  GCov that raised line coverage **45% → 94%** and condition coverage **50% → 85%**.
+- *Spring 2025 — Software Analyst, Tamaki Controls (Toronto):* designed a
+  Java↔Python API response schema and built **6 customer-facing REST endpoints**
+  importing and exporting UTF-8 CSV/JSON data, backed by SQL aggregation queries.
 
 **Projects**
 

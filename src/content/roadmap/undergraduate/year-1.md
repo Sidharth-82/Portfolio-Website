@@ -18,10 +18,11 @@ throughout.
 
 **Co-op**
 
-- *Winter 2022 — C++ Embedded Software Developer, Peraso (Toronto):* optimized
-  read/write routines for pre-production 5G chips, cutting serial command times
-  (write 5 ms → 1.3 ms, read 2 ms → 1 ms), and wrote unit tests for command
-  conversion.
+- *Winter 2022 — Embedded Software Developer, Peraso (Toronto):* developed and
+  refactored embedded C++ firmware managing serial flash for pre-production 5G
+  silicon, and owned the parser converting hex commands into bit sequences. Root
+  cause analysis found duplicate parsing functions, cutting write latency
+  **5 ms → 1.3 ms** and read **2 ms → 1 ms**.
 
 **Projects & teams**
 

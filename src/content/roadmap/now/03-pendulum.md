@@ -1,5 +1,5 @@
 ---
-label: N-Link Pendulum
+label: Pendulum RL Control
 sublabel: Simulator done
 order: 3
 ---

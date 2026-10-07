@@ -26,7 +26,7 @@ Perception for robotics and autonomous driving — object detection (YOLOv8),
 classical OpenCV pipelines, and multimodal vision-language reasoning.
 
 Increasingly the geometry underneath it too. The
-[Cloud-Native AV Perception Stack](/projects/#carla) meant deriving camera
+[Cloud-Native ADAS Perception Stack](/projects/#carla) meant deriving camera
 intrinsics from FOV rather than storing them, projecting 3-D actor boxes into
 2-D and 3-D labels across a left-handed world frame, decoding CARLA's packed
 24-bit depth and 16-bit instance-ID buffers, and building the occlusion and

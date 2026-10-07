@@ -5,7 +5,7 @@ category: Machine Learning & AI
 icon: "🤖"
 featured: true
 order: 7
-aliases: ["Llama 3", "Qwen 3", "LoRA", "RoPE", "GQA"]
+aliases: ["Llama 3", "LoRA", "RoPE", "GQA"]
 courses: []
   # - title: "TODO: e.g. LLMs / NLP course"
   #   provider: "TODO: provider"
@@ -18,4 +18,4 @@ courses: []
 <!-- SCAFFOLD: replace placeholders; projects auto-derive from tags. -->
 
 Building and fine-tuning large language / vision-language models — implemented
-Llama 3 from scratch (RoPE, GQA) and LoRA-tuned Qwen 3 for driving-scene VQA.
+Llama 3 from scratch (RoPE, GQA), and evaluated OpenVLA-7B, a vision-language-action model.

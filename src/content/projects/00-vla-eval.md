@@ -1,5 +1,5 @@
 ---
-title: VLA Policy Evaluation Layer
+title: VLA Policy Eval Layer
 summary: An evaluation harness for vision-language-action robot policies. It answers two questions a benchmark score can't — when does the policy break, and is the difference real?
 image: /videos/projects/vla-eval.mp4
 github: https://github.com/Sidharth-82/OpenVLA-Custom-Eval-Layer
@@ -39,7 +39,7 @@ TAGS: OpenVLA, LIBERO, MuJoCo and Statistics have no skill page and render as
 plain chips.
 -->
 
-**The VLA Policy Evaluation Layer** is a test harness for vision-language-action
+**The VLA Policy Eval Layer** is a test harness for vision-language-action
 robot policies — models that take a camera image and a sentence ("put the bowl on
 the plate") and output arm motions. It is not a model and not a training run. It is
 the instrument that tells you **where a policy stops working, and whether a
@@ -196,8 +196,8 @@ the multiple-comparisons decision.
 <details>
 <summary>Step 6: Regression report (Not started)</summary>
 
-Two policy versions (full-precision vs 4-bit quantized OpenVLA), one command, one
-HTML report.
+Two policy versions (bf16 vs 4-bit quantized OpenVLA), one command, one HTML
+report.
 </details>
 
 ## By the numbers

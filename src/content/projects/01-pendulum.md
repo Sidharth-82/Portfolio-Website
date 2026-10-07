@@ -1,5 +1,5 @@
 ---
-title: Learned Swing-Up for an N-Link Pendulum
+title: Self-Balancing Pendulum RL Control System
 summary: An N-link pendulum on a belt-driven cart, written in C++ end to end — dynamics, an LQR baseline, and a hand-written PPO — built so the simulator can be trusted enough to buy hardware against.
 image: /videos/projects/pendulum.mp4
 github: https://github.com/Sidharth-82/RL-Pendulum-Balance
@@ -45,7 +45,7 @@ baseline/ envelope_report for the LQR and hardware figures. The one exception is
 the hardware spec itself, which is a derived requirement, not a purchase.
 -->
 
-**Learned Swing-Up for an N-Link Pendulum** is a control project and a C++ project
+**Self-Balancing Pendulum RL Control System** is a control project and a C++ project
 in equal measure. A chain of unactuated links hangs from a cart on a **2 m rail**,
 and the only thing the controller can do is accelerate the cart. From hanging, at
 rest, a neural network learns to throw the links over the top and hold them

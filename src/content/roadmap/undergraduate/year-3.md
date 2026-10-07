@@ -20,7 +20,8 @@ controls-focused co-op that sparked my interest in simulation and HMIs.
 **Co-op**
 
 - *Winter 2024 — Controls System Engineer, Brock Solutions (Kitchener):* built
-  SCADA high-performance HMIs in **Ignition** and Python-driven process
-  simulations that replicated full plant behavior to validate HMI designs.
+  Ignition SCADA HMI screens for live crane, acid-bath and pump operations at a
+  steel facility, and simulated PLC outputs across a **27-PLC** system to validate
+  the HMI designs before commissioning.
 
 **Held Excellent Standing.**

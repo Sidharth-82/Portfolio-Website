@@ -1,5 +1,5 @@
 ---
-title: Path Following Robot (MTE 380)
+title: Machine Vision Path Following Robot (MTE 380)
 summary: A real-time OpenCV vision system on a Raspberry Pi 5 that detects and tracks a path for autonomous navigation.
 image: /videos/projects/MTE380-Robot.mp4
 github: https://github.com/VictorKaraboychev/mobile-robot-vision-rp5

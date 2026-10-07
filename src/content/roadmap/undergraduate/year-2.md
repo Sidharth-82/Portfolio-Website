@@ -17,11 +17,12 @@ two contrasting co-ops spanning process engineering and a startup.
 
 **Co-ops**
 
-- *Fall 2022 — Workflow Designer, Matcor Metal Fabrication (Brampton):* mapped a
-  CNC-machine deployment roadmap, ran a workflow study, applied 5S workstation
-  optimization, and corrected plant schematics in AutoCAD.
-- *Spring 2023 — Product Developer, GenAI Ventures (Toronto):* partnered with the
-  founder and CPO to build a social-matching app in **Flutter** with a Firebase
-  backend and Python optimization functions.
+- *Fall 2022 — Process Engineering Student, Matcor (Brampton):* gathered and
+  structured tooling use-case data across plant operations, built Excel analyses
+  recommending new tooling versus reusing existing machines, and ran observational
+  workflow studies that improved process efficiency.
+- *Spring 2023 — Product Developer, Gen AI Ventures (Toronto):* partnered with the
+  founder and CPO to architect a social-matching app in **Flutter**, with a Firebase
+  backend (OAuth sessions, Firestore, Cloud Functions).
 
 **Held Excellent Standing.**

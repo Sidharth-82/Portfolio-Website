@@ -16,7 +16,7 @@ courses: []
 
 Cloud infrastructure for ML workloads, learned by paying for it. Everything
 below comes from running the Phase 1 data-generation pipeline of the
-[Cloud-Native AV Perception Stack](/projects/#carla) — GPU rendering that could not run on my own hardware had to run in the cloud, cheaply.
+[Cloud-Native ADAS Perception Stack](/projects/#carla) — GPU rendering that could not run on my own hardware had to run in the cloud, cheaply.
 
 - **EC2** — GPU capture on `g4dn.xlarge` **spot** instances at roughly
   $0.15–0.20/hr against $0.53 on demand, a **baked AMI** that cuts startup from

@@ -27,7 +27,7 @@ export function withBase(path: string): string {
 
 export const site = {
   name: 'Sidharth Sreeram',
-  role: 'Aspiring AI Systems Engineer',
+  role: 'Robotics AI Engineer',
   tagline: 'I build software that understands the world around me',
   email: 'sidharthsreeram@gmail.com',
   /** Content-hashed at build time — replace `src/assets/resume.pdf` to update. */
