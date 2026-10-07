@@ -16,7 +16,7 @@ export interface EraData {
   id: string;
   title: string;
   subtitle: string;
-  kind: 'years' | 'months';
+  kind: 'years' | 'months' | 'projects';
   entries: TimelineEntry[];
 }
 

@@ -24,7 +24,7 @@ const erasData: EraData[] = eras
       .map((n) => ({
         id: n.id,
         // Stable deep-link slug from the filename: `undergraduate/year-1` ->
-        // `year-1`, `current/01-january` -> `january`. Used by `/roadmap/#<slug>`.
+        // `year-1`, `now/01-vla-eval` -> `vla-eval`. Used by `/roadmap/#<slug>`.
         slug: n.id.split('/')[1].replace(/^\d+-/, '').replace(/\.md$/, ''),
         label: n.data.label,
         sublabel: n.data.sublabel,
@@ -40,7 +40,7 @@ const erasData: EraData[] = eras
         Learning <span class="text-accent">Roadmap</span>
       </h1>
       <p class="mt-2 max-w-2xl text-muted">
-        Pick an era to zoom in, then click any node to read what happened (or what's planned).
+        Pick an era to zoom in, then click any node to read what happened (or what I'm building now).
       </p>
     </header>
     <Timeline client:load eras={erasData} />

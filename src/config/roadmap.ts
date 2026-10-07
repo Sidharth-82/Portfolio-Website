@@ -11,9 +11,10 @@
  *
  *   kind: 'years'  -> the zoomed view shows one node per year file
  *   kind: 'months' -> the zoomed view shows one node per month file
+ *   kind: 'projects' -> the zoomed view shows one node per project file
  */
 
-export type EraKind = 'years' | 'months';
+export type EraKind = 'years' | 'months' | 'projects';
 
 export interface Era {
   /** stable id, used in UI state */
@@ -37,11 +38,13 @@ export const eras: Era[] = [
     order: 1,
   },
   {
-    id: 'current',
-    title: 'Future Plan',
-    subtitle: 'August 2026 – July 2027',
-    kind: 'months',
-    collectionDir: 'current',
+    // Replaced the 12-month "Future Plan" era (2026-10-07). One node per project
+    // currently in progress — update the files in roadmap/now/ as they change.
+    id: 'now',
+    title: "What I'm Up To Now",
+    subtitle: 'October 2026',
+    kind: 'projects',
+    collectionDir: 'now',
     order: 2,
   },
   // 👉 Add future eras here as life goes on, e.g.:

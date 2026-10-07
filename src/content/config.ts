@@ -60,7 +60,7 @@ const skills = defineCollection({
 });
 
 // One .md file per timeline node. Lives in subfolders that match the era's
-// `collectionDir` (e.g. roadmap/undergraduate/year-1.md, roadmap/current/01-january.md).
+// `collectionDir` (e.g. roadmap/undergraduate/year-1.md, roadmap/now/01-vla-eval.md).
 const roadmap = defineCollection({
   type: 'content',
   schema: z.object({
